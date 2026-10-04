@@ -1,6 +1,6 @@
 """Daten und Hilfsfunktionen für die Wanderrouten (gemeinsam für Streamlit-App und statische Seite).
 
-Quellen: schladming-dachstein.at, steiermark.com, hauser-kaibling.at, tourispo.de.
+Quellen: schladming-dachstein.at, steiermark.com, hauser-kaibling.at, tourispo.de (geprüft am 04.10.2026).
 Start-Höhe = höchster Punkt minus Aufstieg (abgeleitet, daher "ca.").
 Anfahrt, Pause und Gesamtdauer ab Chalet sind Schätzungen.
 """
@@ -36,7 +36,7 @@ ROUTES = [
          auto="Ja, empfohlen (am Start keine öffentliche Anbindung)", maut=False, bus=False, dest="Bottinghaus, 8965 Pruggern",
          weg="Forstweg zum Wegkreuz, dann links talwärts am Speicherteich vorbei zur Hütte. Zurück über einen Wald- und Wurzelsteig hinter der Hütte.",
          plus=["Sonnenterrasse der Galsterbergalmhütte", "Murmeltiere rund um die Hütte", "Kurz und gut als Aufwärmrunde"],
-         info="Zufahrt über den Pruggererbergweg ab Pruggern (Serpentinen). Öffnungszeiten der Hütte vorab klären.",
+         info="Zufahrt über den Pruggererbergweg ab Pruggern (Serpentinen), nicht an der Talstation parken. Hütte im Herbst Fr–So 9–18 Uhr geöffnet, Küche 10:30–17 Uhr (Tel. +43 676 951 8228). Die Galsterbergbahn fährt nur im Winter.",
          url="https://www.schladming-dachstein.at/de/aktivitaeten/touren/Wanderung-zur-Galsterbergalmh-C3-BCtte_tour_6190",
          wetter={"Klar und stabil", "Wolken oder Neuschnee in der Höhe"}),
     dict(nr=2, name="Pleschnitzzinken (2.112 m)", kurz="Pleschnitzzinken", niveau="mittel", km=5.5, geh=150, hm=490, top=2112,
@@ -44,7 +44,7 @@ ROUTES = [
          auto="Ja, empfohlen (am Start keine öffentliche Anbindung)", maut=False, bus=False, dest="Bottinghaus, 8965 Pruggern",
          weg="Forststraße, dann Waldsteig durch Fichten, Lärchen und Zirben. Über der Baumgrenze durch Latschen und Almrosen zur unbewirtschafteten "
              "Pleschnitzzinken Hütte, dann über den Grasrücken zum Gipfelkreuz. Abstieg über die andere Rückenseite und die Galsterbergalm.",
-         plus=["Gipfelkreuz auf 2.112 m", "Blick ins Ennstal", "Einkehr auf dem Rückweg an der Galsterbergalm"],
+         plus=["Gipfelkreuz auf 2.112 m", "Blick auf Hochwildstelle und Dachstein", "Einkehr auf dem Rückweg an der Galsterbergalm (Sa geöffnet)"],
          info="Große Variante ab Hüttendorf Pruggern: ca. 11 km, 1.057 Hm, nach Quelle 7:30 h. Erweiterungen: Ochsenkarhöhe (ca. +1 h), Schober (ca. 5 h). "
               "Wetterumschwung, Wind und Schnee einplanen.",
          url="https://www.schladming-dachstein.at/de/aktivitaeten/touren/Pleschnitzzinken_tour_6191",
@@ -55,7 +55,7 @@ ROUTES = [
          weg="Von der Rosemi Alm durch Lärchen-, Zirben- und Latschenwald über die Baumgrenze. Stationen: AV-Weg 675, Stoderhütte, "
              "Peter-Rosegger-Denkmal, Gipfel, Brünnerhütte, Steinerhaus.",
          plus=["360-Grad-Panorama mit Dachstein-Gletscher", "Blick auf das Gröbminger Becken", "Mehrere Hütten entlang der Runde"],
-         info="Trittsicherheit und Schwindelfreiheit nötig. Der Weg zum Friedenskircherl ist bei Schnee ungeeignet.",
+         info="Trittsicherheit und Schwindelfreiheit nötig. Maut 20 € pro Pkw (14.09.–01.11.2026, mit Schladming-Dachstein Card frei). Öffnung von Steinerhaus und Rosemi Alm vorab prüfen. Lässt sich mit dem Friedenskircherl (7) kombinieren.",
          url="https://www.schladming-dachstein.at/de/schladming-dachstein-entdecken/winterberge/galsterberg/touren/Stoderzinken-Gipfelrundweg_tour_6139",
          wetter={"Klar und stabil", "Klar, aber gemütlich"}),
     dict(nr=4, name="Stoderalm-Rundweg zum Gröbminger Blick", kurz="Stoderalm-Rundweg", niveau="leicht", km=4.9, geh=105, hm=230, top=1829,
@@ -83,15 +83,62 @@ ROUTES = [
          info="Parkplatz gegenüber Regional Regal Pruggern (nahe Bahnsteig). Busse 900 (ab Schladming) und 901 (ab Stainach).",
          url="https://www.steiermark.com/de/Schladming-Dachstein/Urlaub-planen/Tourenportal/Pruggern-Moosheim-Runde-P4_tour_54673603",
          wetter={"Regen oder Nebel", "Wolken oder Neuschnee in der Höhe"}),
+    dict(nr=7, name="Friedenskircherl am Stoderzinken", kurz="Friedenskircherl", niveau="leicht", km=3.0, geh=75, hm=160, top=1903,
+         start_ort="Parkplatz Roßfeld (Rosemi Alm) oder Christophorus", kondition="leicht, aber kurze ausgesetzte Stellen", fahrt=40, pause=45,
+         auto="Ja, Mautstraße (Shuttle fährt im Oktober nicht)", maut=True, bus=False, dest="Rosemi Alm, Stoderzinken, 8962 Gröbming",
+         weg="Von der Rosemi Alm leicht ansteigend zum Rosegger-Denkmal. Danach ein flacher, schmaler und gesicherter Steig dicht an der Felswand "
+             "zur Kapelle (ca. 40 Min). Das letzte Stück führt über Kalkschutt und ist etwas ausgesetzt.",
+         plus=["Kapelle von 1902 direkt an der Felswand", "2022 im ORF zum schönsten Platz Österreichs gewählt", "Kurz, ideal mit dem Gipfelrundweg (3)"],
+         info="Gute Schuhe und Stöcke. Die Geländer an den steilen Stellen sind laut Quelle nur im Sommer montiert, bei Schnee oder Eis nicht gehen.",
+         url="https://www.steiermark.com/de/Schladming-Dachstein/Urlaub-planen/Tourenportal/Friedenskircherl-am-Stoderzinken_tour_1198170",
+         wetter={"Klar und stabil", "Klar, aber gemütlich"}),
 ]
 
 WETTER = {
-    "Klar und stabil": "Gipfeltag: Pleschnitzzinken (2) oder Stoderzinken (3). Mit Zeitreserve zusätzlich die Galsterbergalm-Runde (1).",
-    "Klar, aber gemütlich": "Stoderzinken-Gipfelrundweg (3), danach die Stoderalm-Runde (4). Beide starten am gleichen Parkplatz.",
-    "Wolken oder Neuschnee in der Höhe": "Kurz und mit Hütte als Ziel: Galsterbergalm-Runde (1). Alternativ die Talrunden (5, 6).",
-    "Regen oder Nebel": "Talrunden Pruggern–Assach (5) oder Pruggern–Moosheim (6): fast eben, ganzjährig begehbar, direkt im Ort.",
+    "Klar und stabil": "Plan A: Gruppe teilen. Die Fitten gehen auf den Pleschnitzzinken (2), die anderen direkt zur Galsterbergalm (1). Mittagessen gemeinsam an der Hütte. Alternative: Plan B am Stoderzinken (3 + 7).",
+    "Klar, aber gemütlich": "Plan B: Stoderzinken. Friedenskircherl (7) und Stoderalm-Runde (4) mit Einkehr, wer mag nimmt den Gipfel (3) mit. Alles ab demselben Parkplatz.",
+    "Wolken oder Neuschnee in der Höhe": "Plan C: Galsterbergalm-Runde (1) mit langer Einkehr, nur 10 Min vom Chalet. Kein Friedenskircherl und kein Gipfel bei Schnee.",
+    "Regen oder Nebel": "Plan D: Talrunde Pruggern–Assach (5) mit Einkehr im Landgasthof Bierfriedl, danach früh in die Banja.",
 }
 
+# Fertige Tagespläne. Zeiten sind Vorschläge (Gehzeiten laut Quelle, Rest geschätzt).
+PLAENE = [
+    dict(id="A", titel="Gruppe teilen am Galsterberg", wetter="Klar und stabil", touren=[2, 1], tipp="Empfehlung",
+         kurz="Fitte auf den Pleschnitzzinken, alle anderen gemütlich zur Hütte. Mittag gemeinsam an der Galsterbergalm.",
+         plan=[("09:30", "Gruppe Gipfel: Abfahrt am Chalet zum Parkplatz Bottinghaus (Auto 1, ca. 10 Min)"),
+               ("09:45", "Gruppe Gipfel: Start auf Forststraße und Waldsteig"),
+               ("10:45", "Gruppe Gipfel an der Pleschnitzzinken Hütte (1.911 m)"),
+               ("11:00", "Gruppe Hütte: Abfahrt am Chalet (Auto 2)"),
+               ("11:15", "Gruppe Gipfel am Gipfelkreuz (2.112 m) · Gruppe Hütte startet die Galsterbergalm-Runde"),
+               ("12:15", "Alle treffen sich an der Galsterbergalmhütte, Küche ab 10:30"),
+               ("13:45", "Gemeinsam zurück zum Parkplatz (ca. 15 Min)"),
+               ("14:15", "Zurück am Chalet, Zeit für die Banja")],
+         plus=["Nur 10 Min Anfahrt, keine Maut", "Jeder findet sein Tempo", "Hütte ist samstags geöffnet"]),
+    dict(id="B", titel="Stoderzinken mit Friedenskircherl", wetter="Klar, aber gemütlich", touren=[7, 4, 3], tipp="Fotospot",
+         kurz="Das bekannteste Ausflugsziel der Gegend. Friedenskircherl und Stoderalm-Runde, der Gipfel ist optional.",
+         plan=[("09:00", "Abfahrt am Chalet, Mautstraße ab Gröbming (ca. 40 Min, 20 € pro Auto)"),
+               ("09:45", "Parkplatz Roßfeld an der Rosemi Alm"),
+               ("10:00", "Friedenskircherl über Rosegger-Denkmal (hin und zurück 1:15 h)"),
+               ("11:20", "Stoderalm-Runde zum Gröbminger Blick (1:45 h), Fitte über den Gipfel (3)"),
+               ("13:15", "Einkehr am Stoderzinken (Öffnung vorab prüfen)"),
+               ("14:30", "Rückfahrt"),
+               ("15:15", "Zurück am Chalet")],
+         plus=["Kapelle an der Felswand", "Dachstein-Panorama", "Alles ab einem Parkplatz"]),
+    dict(id="C", titel="Kurz & gemütlich", wetter="Wolken oder Neuschnee in der Höhe", touren=[1], tipp="Schlechtwetter oben",
+         kurz="Eine Stunde Runde mit Murmeltieren und langer Einkehr. Sicher auch bei Neuschnee weiter oben.",
+         plan=[("10:30", "Abfahrt am Chalet zum Bottinghaus"),
+               ("10:45", "Galsterbergalm-Runde (1 h)"),
+               ("11:45", "Einkehr an der Galsterbergalmhütte"),
+               ("13:30", "Zurück am Chalet")],
+         plus=["Ausschlafen möglich", "Kaum Risiko", "Viel Zeit für Banja"]),
+    dict(id="D", titel="Talrunde bei Regen", wetter="Regen oder Nebel", touren=[5], tipp="Regen",
+         kurz="Fast eben an der Enns entlang, mit Einkehr im Landgasthof Bierfriedl (täglich 9–23 Uhr).",
+         plan=[("10:30", "Abfahrt am Chalet ins Tal (ca. 10 Min)"),
+               ("10:45", "Pruggern–Assach-Runde ab Dorfplatz (1:30 h)"),
+               ("12:15", "Mittag im Landgasthof Bierfriedl"),
+               ("13:45", "Zurück am Chalet")],
+         plus=["Ganzjährig begehbar", "Kein Auto nötig ab Ort", "Wetterunabhängig"]),
+]
 
 
 def make_df() -> pd.DataFrame:

@@ -9,7 +9,7 @@ from pathlib import Path
 
 from plotly.offline import get_plotlyjs
 
-from routes import MAUT_PKW, ROUTES, WETTER, make_df, maps_url
+from routes import MAUT_PKW, PLAENE, ROUTES, WETTER, make_df, maps_url
 
 df = make_df()
 routes = []
@@ -19,7 +19,7 @@ for r in df.to_dict("records"):
     r["huette"] = None if r.get("huette") != r.get("huette") else r.get("huette")
     routes.append({k: (v.item() if hasattr(v, "item") else v) for k, v in r.items()})
 
-DATA = {"routes": routes, "wetter": WETTER, "maut": MAUT_PKW}
+DATA = {"routes": routes, "wetter": WETTER, "maut": MAUT_PKW, "plaene": PLAENE}
 data_json = json.dumps(DATA, ensure_ascii=False).replace("</", "<\\/")
 
 HTML = r"""<!doctype html>
@@ -67,6 +67,25 @@ main{padding-top:18px!important}
 .dcover{position:relative;aspect-ratio:21/8;border-radius:14px;overflow:hidden;margin:-2px 0 14px;background:#c9d6e6}
 .dcover svg,.dcover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 @media(max-width:640px){.dcover{aspect-ratio:16/9}}
+.plans{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:8px 0 22px}
+.plan{background:var(--card);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;border:2px solid transparent;cursor:pointer;transition:border-color .15s}
+.plan.on{border-color:var(--accent)}
+.plan .hd{display:flex;align-items:center;gap:10px}
+.plan .lt{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:18px;flex:0 0 auto}
+.plan h3{margin:0;font-size:16px;line-height:1.2}
+.plan .tag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--orange);font-weight:700}
+.plan p{margin:0;font-size:13.5px;color:var(--muted)}
+.plan .tl{display:flex;gap:6px;flex-wrap:wrap}
+.plan .tl span{font-size:12px;background:var(--bg);border-radius:999px;padding:3px 9px}
+.tline{scroll-margin-top:60px;background:var(--card);border-radius:16px;padding:16px 18px;margin:-8px 0 22px}
+.tline h3{margin:0 0 4px}
+.tline ol{list-style:none;margin:10px 0 0;padding:0;position:relative}
+.tline ol::before{content:"";position:absolute;left:52px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tline li{display:grid;grid-template-columns:44px 1fr;gap:22px;padding:6px 0;position:relative;font-size:14px}
+.tline li b{font-variant-numeric:tabular-nums;color:var(--accent)}
+.tline li::before{content:"";position:absolute;left:47px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--orange);border:2px solid var(--card)}
+.tline .tchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tline .tchips a{font-size:13px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--ink)}
 .sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
 main{max-width:1100px;margin:0 auto;padding:0 16px 40px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
@@ -145,6 +164,9 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
 <div id="empty" class="msg warn" hidden>Keine Tour passt zu den Filtern. Bitte oben lockern.</div>
 
 <section class="tab on" id="t-ueber">
+  <div class="sec-title"><h2>Tagespläne für Samstag</h2><span class="note">Nach Wetter wählen, Zeiten sind Vorschläge</span></div>
+  <div class="plans" id="plans"></div>
+  <div class="tline" id="tline"></div>
   <div class="sec-title"><h2>Die Touren</h2><span class="note">Karte antippen für alle Details</span></div>
   <div class="cards" id="cards"></div>
   <div class="grid2">
@@ -183,7 +205,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   <div id="wetter-btns" role="group"></div>
   <div class="msg" id="wetter-txt"></div>
   <div class="tw"><table id="tbl-wetter"></table></div>
-  <div class="msg warn">Mitte Oktober ist in den Höhenlagen Schnee möglich. Sonnenuntergang ungefähr gegen 18 Uhr (am Tag selbst prüfen). Hüttenöffnungszeiten vorab klären, die Pleschnitzzinken Hütte ist unbewirtschaftet.</div>
+  <div class="msg warn">Mitte Oktober ist in den Höhenlagen Schnee möglich. Sonnenuntergang ungefähr gegen 18 Uhr (am Tag selbst prüfen). Die Galsterbergalmhütte hat im Herbst Fr–So 9–18 Uhr geöffnet, die Pleschnitzzinken Hütte ist unbewirtschaftet. Die Galsterbergbahn fährt nur im Winter.</div>
 </section>
 
 <section class="tab" id="t-check">
@@ -194,7 +216,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   <div class="msg err">Notruf: Bergrettung 140 · Euro-Notruf 112. Bei Unfall oder Wetterumschwung früh umkehren, Gruppe zusammenhalten.</div>
 </section>
 </main>
-<footer>Quellen: schladming-dachstein.at, steiermark.com, hauser-kaibling.at, tourispo.de. Alle Angaben sind Richtwerte, aktuelle Bedingungen vor Ort prüfen. Anfahrt, Pausen und Gesamtdauer sind Schätzungen.</footer>
+<footer>Quellen: schladming-dachstein.at, steiermark.com, hauser-kaibling.at, tourispo.de (geprüft am 04.10.2026). Alle Angaben sind Richtwerte, aktuelle Bedingungen vor Ort prüfen. Anfahrt, Pausen und Gesamtdauer sind Schätzungen.</footer>
 
 <script id="data" type="application/json">__DATA__</script>
 <script>__PLOTLY__</script>
@@ -306,6 +328,19 @@ function renderCards(f){
     '<div class="cact"><a class="btn" href="#" data-open="'+t.nr+'">Details</a><a class="btn ghost" href="'+t.maps+'" target="_blank" rel="noopener">Maps</a></div></div></article>').join('');
 }
 
+
+state.plan = 'A';
+function renderPlans(){
+  $('plans').innerHTML = D.plaene.map(p => '<div class="plan'+(p.id===state.plan?' on':'')+'" data-plan="'+p.id+'" role="button" tabindex="0"><div class="hd"><span class="lt">'+p.id+'</span><div><div class="tag">'+p.tipp+'</div><h3>'+p.titel+'</h3></div></div><p>'+p.kurz+'</p>'+
+    '<div class="tl"><span>☁ '+p.wetter+'</span>'+p.touren.map(n => '<span>Tour '+n+'</span>').join('')+'</div></div>').join('');
+  const p = D.plaene.find(x => x.id === state.plan);
+  const ts = p.touren.map(n => ALL.find(r => r.nr === n));
+  $('tline').innerHTML = '<h3>Plan '+p.id+': '+p.titel+'</h3><div class="note">'+p.plus.join(' · ')+'</div><ol>'+p.plan.map(([t, x]) => '<li><b>'+t+'</b><span>'+x+'</span></li>').join('')+'</ol>'+
+    '<div class="tchips">'+ts.map(r => '<a href="#" data-open="'+r.nr+'">'+r.nr+' · '+r.kurz+' · '+fmtH(r.geh)+' · '+r.hm+' Hm →</a>').join('')+'</div>';
+}
+document.addEventListener('click', e => { const g = e.target.closest('[data-goplan]'); if (g){ e.preventDefault(); state.plan = g.dataset.goplan; setTab('ueber'); $('plans').scrollIntoView({behavior:'smooth'}); } });
+document.addEventListener('click', e => { const c = e.target.closest('[data-plan]'); if (c){ state.plan = c.dataset.plan; renderPlans(); if (innerWidth < 800) $('tline').scrollIntoView({behavior:'smooth', block:'start'}); } });
+
 function renderKpis(f){
   const mx = k => Math.max(...f.map(r => r[k]));
   $('kpis').innerHTML = [
@@ -380,7 +415,7 @@ function renderAnreise(f){
   $('out-autos').textContent = 'Autos nötig: ' + autos;
   const hasMaut = f.some(r => r.maut), kosten = autos*D.maut;
   $('out-maut').innerHTML = hasMaut
-    ? '<div class="msg"><b>Maut Stoderzinken (Tour 3/4): '+kosten+' €</b> ('+(kosten/pers).toFixed(2).replace('.',',')+' € pro Person). 20 € pro Pkw. Laut Tourismusseite ist die Maut zwischen 14.09. und 01.11.2026 mit der Schladming-Dachstein Card inklusive.</div>'
+    ? '<div class="msg"><b>Maut Stoderzinken (Tour 3, 4, 7): '+kosten+' €</b> ('+(kosten/pers).toFixed(2).replace('.',',')+' € pro Person). 20 € pro Pkw. Laut Tourismusseite ist die Maut zwischen 14.09. und 01.11.2026 mit der Schladming-Dachstein Card inklusive.</div>'
     : '<div class="msg">Keine der gefilterten Touren nutzt die Mautstraße.</div>';
   $('tbl-anreise').innerHTML = '<tr><th>Tour</th><th class="n">Anfahrt</th><th>Auto</th><th class="n">Gesamt</th></tr>' +
     f.map(r => '<tr><td>'+r.nr+'  '+r.kurz+'</td><td class="n">'+r.fahrt+' Min</td><td>'+r.auto+'</td><td class="n">'+fmtH(r.gesamt)+'</td></tr>').join('');
@@ -401,12 +436,13 @@ function renderDetail(f){
 function renderWetter(){
   $('wetter-btns').innerHTML = Object.keys(D.wetter).map(k => '<button class="chip" data-l="'+k+'" aria-pressed="'+(k===state.lage)+'">'+k+'</button>').join(' ');
   $('wetter-txt').textContent = D.wetter[state.lage];
+  const wp = D.plaene.find(p => p.wetter === state.lage); if (wp) $('wetter-txt').innerHTML += ' <a href="#" data-goplan="'+wp.id+'">Zeitplan ansehen →</a>';
   const p = ALL.filter(r => r.wetter.includes(state.lage));
   $('tbl-wetter').innerHTML = '<tr><th>Tour</th><th>Niveau</th><th class="n">Aufstieg</th><th class="n">Gehzeit</th></tr>' +
     p.map(r => '<tr><td>'+r.nr+' · '+r.name+'</td><td><span class="pill '+r.niveau+'">'+r.niveau+'</span></td><td class="n">'+r.hm+' Hm</td><td class="n">'+fmtH(r.geh)+'</td></tr>').join('');
 }
 
-const CHK_E = ['Wetter und Schneelage am Vorabend prüfen','Tour mit der Gruppe abstimmen (Niveau, Dauer)','Hüttenöffnung telefonisch klären','Fahrgemeinschaften und Abfahrtszeit festlegen','Mautstraße und Parkplatz klären (Tour 3 und 4)','Notruf und Treffpunkt im Chat teilen'];
+const CHK_E = ['Wetter und Schneelage am Vorabend prüfen','Plan nach Wetter wählen und Gruppen einteilen (Gipfel / Hütte)','Galsterbergalm: Tisch für 9 reservieren (+43 676 951 8228)','Fahrgemeinschaften und Abfahrtszeit festlegen','Plan B: Maut 20 € pro Auto, Öffnung Steinerhaus/Rosemi Alm prüfen','Notruf und Treffpunkt im Chat teilen'];
 const CHK_G = ['Wanderschuhe mit Profil','Warme Schichten, Mütze','Regen- und Windjacke','Trinkflasche (1 l)','Gipfel-Brotzeit','Stirnlampe','Powerbank, Offline-Karte','Erste-Hilfe-Set','Sonnenbrille'];
 function lsGet(k){ try { return localStorage.getItem(k) === '1'; } catch(e){ return false; } }
 function lsSet(k,v){ try { localStorage.setItem(k, v ? '1' : '0'); } catch(e){} }
@@ -422,7 +458,7 @@ function render(){
   if (!f.length){ $('kpis').innerHTML = ''; return; }
   renderKpis(f);
   const t = state.tab;
-  if (t === 'ueber'){ renderCards(f); renderOver(f); }
+  if (t === 'ueber'){ renderPlans(); renderCards(f); renderOver(f); }
   if (t === 'hoehe') renderHoehe(f);
   if (t === 'anreise') renderAnreise(f);
   if (t === 'detail') renderDetail(f);

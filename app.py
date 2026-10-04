@@ -11,7 +11,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Wanderrouten Galsterberg", page_icon="⛰️", layout="wide")
 
-from routes import CHALET, MAUT_PKW, ROUTES, WETTER, fmt_h, fmt_m, make_df, maps_url
+from routes import CHALET, MAUT_PKW, PLAENE, ROUTES, WETTER, fmt_h, fmt_m, make_df, maps_url
 
 df = make_df()
 
@@ -71,8 +71,24 @@ k3.metric("Höchster Punkt", fmt_m(f["top"].max()))
 k4.metric("Max. Gehzeit", fmt_h(f["geh"].max()))
 k5.metric("Längster Tag ab Chalet", fmt_h(f["gesamt"].max()))
 
-tab_ueber, tab_hoehe, tab_anreise, tab_detail, tab_wetter, tab_check = st.tabs(
-    ["Überblick", "Höhenmeter", "Anreise & Gesamtzeit", "Tourdetails", "Wetter-Check", "Checklisten"])
+tab_plan, tab_ueber, tab_hoehe, tab_anreise, tab_detail, tab_wetter, tab_check = st.tabs(
+    ["Tagespläne", "Überblick", "Höhenmeter", "Anreise & Gesamtzeit", "Tourdetails", "Wetter-Check", "Checklisten"])
+
+# ----------------------------------------------------------------------------
+# Tagespläne
+# ----------------------------------------------------------------------------
+with tab_plan:
+    st.subheader("Tagespläne für Samstag")
+    wahl = st.radio("Plan", [p["id"] for p in PLAENE], horizontal=True,
+                    format_func=lambda i: next(f"{p['id']} · {p['titel']}" for p in PLAENE if p["id"] == i))
+    p = next(x for x in PLAENE if x["id"] == wahl)
+    st.markdown(f"**{p['tipp']}** · Wetter: {p['wetter']}  \n{p['kurz']}")
+    st.caption(" · ".join(p["plus"]))
+    for zeit, was in p["plan"]:
+        st.markdown(f"**{zeit}** &nbsp; {was}")
+    st.dataframe(df[df["nr"].isin(p["touren"])].assign(Tour=lambda d: d["nr"].astype(str) + "  " + d["name"], Gehzeit=lambda d: d["geh"].map(fmt_h),
+                 Aufstieg=lambda d: d["hm"].astype(str) + " Hm")[["Tour", "Gehzeit", "Aufstieg", "auto"]].rename(columns={"auto": "Auto"}),
+                 hide_index=True, width="stretch")
 
 # ----------------------------------------------------------------------------
 # Überblick
@@ -203,7 +219,7 @@ with tab_anreise:
         st.info("Keine der gefilterten Touren nutzt die Mautstraße.")
     else:
         kosten = autos * MAUT_PKW
-        st.metric("Maut Stoderzinken (Tour 3/4)", f"{kosten} €", f"{kosten / personen:.2f} € pro Person".replace(".", ","), delta_color="off")
+        st.metric("Maut Stoderzinken (Tour 3, 4, 7)", f"{kosten} €", f"{kosten / personen:.2f} € pro Person".replace(".", ","), delta_color="off")
         st.caption("20 € pro Pkw. Laut Tourismusseite ist die Maut zwischen 14.09. und 01.11.2026 mit der Schladming-Dachstein Card inklusive.")
     st.dataframe(f.assign(Tour=f["nr"].astype(str) + "  " + f["kurz"], Anfahrt=f["fahrt"].astype(str) + " Min",
                           Auto=f["auto"], Gesamt=f["gesamt"].map(fmt_h))[["Tour", "Anfahrt", "Auto", "Gesamt"]],
@@ -249,7 +265,8 @@ with tab_wetter:
                                 Aufstieg=passend["hm"].astype(str) + " Hm", Gehzeit=passend["geh"].map(fmt_h))
                  [["Tour", "Niveau", "Aufstieg", "Gehzeit"]], hide_index=True, width="stretch")
     st.info("Mitte Oktober ist in den Höhenlagen Schnee möglich. Sonnenuntergang ungefähr gegen 18 Uhr (am Tag selbst prüfen). "
-            "Hüttenöffnungszeiten vorab klären, die Pleschnitzzinken Hütte ist unbewirtschaftet.")
+            "Die Galsterbergalmhütte hat im Herbst Fr–So 9–18 Uhr geöffnet, die Pleschnitzzinken Hütte ist unbewirtschaftet. "
+            "Die Galsterbergbahn fährt nur im Winter.")
 
 # ----------------------------------------------------------------------------
 # Checklisten
@@ -258,9 +275,9 @@ with tab_check:
     c1, c2 = st.columns(2)
     with c1:
         st.subheader("Checkliste für Eugen")
-        for i, t in enumerate(["Wetter und Schneelage am Vorabend prüfen", "Tour mit der Gruppe abstimmen (Niveau, Dauer)",
-                               "Hüttenöffnung telefonisch klären", "Fahrgemeinschaften und Abfahrtszeit festlegen",
-                               "Mautstraße und Parkplatz klären (Tour 3 und 4)", "Notruf und Treffpunkt im Chat teilen"]):
+        for i, t in enumerate(["Wetter und Schneelage am Vorabend prüfen", "Plan nach Wetter wählen und Gruppen einteilen (Gipfel / Hütte)",
+                               "Galsterbergalm: Tisch für 9 reservieren (+43 676 951 8228)", "Fahrgemeinschaften und Abfahrtszeit festlegen",
+                               "Plan B: Maut 20 € pro Auto, Öffnung Steinerhaus/Rosemi Alm prüfen", "Notruf und Treffpunkt im Chat teilen"]):
             st.checkbox(t, key=f"e{i}")
     with c2:
         st.subheader("Ausrüstung")
