@@ -23,6 +23,10 @@ Optional: `CHALET_ADRESSE="Straße, PLZ Ort"` setzen, dann startet die Google-Ma
 python build_static.py   # schreibt docs/index.html
 ```
 
+## Eigene Fotos
+
+Fotos als `docs/img/tour-1.jpg` … `tour-6.jpg` ablegen (Querformat). Die Seite zeigt sie automatisch statt der Illustration.
+
 ## Dateien
 
 - `routes.py`: Daten zu den Touren (hier ändern)
