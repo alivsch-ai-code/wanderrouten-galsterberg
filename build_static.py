@@ -9,7 +9,7 @@ from pathlib import Path
 
 from plotly.offline import get_plotlyjs
 
-from routes import MAUT_PKW, PLAENE, ROUTES, WETTER, make_df, maps_url
+from routes import CHALET, MAUT_PKW, PLAENE, ROUTES, WETTER, make_df, maps_url
 
 df = make_df()
 routes = []
@@ -19,7 +19,7 @@ for r in df.to_dict("records"):
     r["huette"] = None if r.get("huette") != r.get("huette") else r.get("huette")
     routes.append({k: (v.item() if hasattr(v, "item") else v) for k, v in r.items()})
 
-DATA = {"routes": routes, "wetter": WETTER, "maut": MAUT_PKW, "plaene": PLAENE}
+DATA = {"routes": routes, "wetter": WETTER, "maut": MAUT_PKW, "plaene": PLAENE, "chalet": CHALET}
 data_json = json.dumps(DATA, ensure_ascii=False).replace("</", "<\\/")
 
 HTML = r"""<!doctype html>
@@ -92,6 +92,7 @@ main{max-width:1100px;margin:0 auto;padding:0 16px 40px}
 .kpi{background:var(--card);border-radius:10px;padding:10px 14px}
 .kpi b{display:block;font-size:22px}.kpi span{color:var(--muted);font-size:12px}
 .filters{display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:var(--card);border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.abwahl{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
 .filters label{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
 .chip{border:1px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;background:transparent;color:var(--ink);font:inherit;font-size:13px}
 .chip[aria-pressed=true]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
@@ -116,6 +117,7 @@ td.n,th.n{text-align:right;white-space:nowrap}
  .filters{gap:10px;padding:10px 12px}
  .filters label{width:100%;justify-content:space-between}
  .filters input[type=range]{flex:1}
+ .filters label:has(input[type=checkbox]){justify-content:flex-start}
  .tw table td:first-child{min-width:150px;max-width:170px}
  .tw::after{content:"← wischen für mehr Spalten →";display:block;font-size:11.5px;color:var(--muted);text-align:center;margin-top:4px}
 }
@@ -151,6 +153,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   <label>Max. Gehzeit <input type="range" id="f-geh" min="60" max="180" step="15" value="180"> <b id="v-geh">3:00 h</b></label>
   <label>Max. Aufstieg <input type="range" id="f-hm" min="0" max="500" step="5" value="500"> <b id="v-hm">500 Hm</b></label>
   <label><input type="checkbox" id="f-maut"> ohne Mautstraße</label>
+  <span class="abwahl">Route ab: <button class="chip" id="ab-chalet" aria-pressed="true">Chalet</button> <button class="chip" id="ab-hier" aria-pressed="false">Mein Standort</button></span>
 </div>
 <div class="kpis" id="kpis"></div>
 <nav role="tablist" id="tabs">
@@ -325,11 +328,17 @@ function renderCards(f){
   $('cards').innerHTML = f.map(t => '<article class="card"><div class="cover">'+tourArt(t)+photo(t)+'<span class="nr">'+t.nr+'</span><span class="pill '+t.niveau+'">'+t.niveau+'</span><span class="alt">▲ '+fmtM(t.top)+'</span></div>'+
     '<div class="cbody"><h3>'+t.name+'</h3><p>'+t.plus[0]+'</p>'+
     '<div class="stats"><div>'+ICO.km+'<b>'+de1(t.km)+' km</b><span>Länge</span></div><div>'+ICO.geh+'<b>'+fmtH(t.geh)+'</b><span>Gehzeit</span></div><div>'+ICO.hm+'<b>'+t.hm+'</b><span>Hm</span></div><div>'+ICO.top+'<b>'+fmtH(t.gesamt)+'</b><span>ab Chalet</span></div></div>'+
-    '<div class="cact"><a class="btn" href="#" data-open="'+t.nr+'">Details</a><a class="btn ghost" href="'+t.maps+'" target="_blank" rel="noopener">Maps</a></div></div></article>').join('');
+    '<div class="cact"><a class="btn" href="#" data-open="'+t.nr+'">Details</a><a class="btn ghost" href="'+mapsUrl(t)+'" target="_blank" rel="noopener">Maps</a></div></div></article>').join('');
 }
 
 
 state.plan = 'A';
+state.ab = 'chalet';
+function mapsUrl(r){
+  let u = 'https://www.google.com/maps/dir/?api=1';
+  if (state.ab === 'chalet' && D.chalet) u += '&origin=' + encodeURIComponent(D.chalet);
+  return u + '&destination=' + encodeURIComponent(r.dest) + '&travelmode=driving';
+}
 function renderPlans(){
   $('plans').innerHTML = D.plaene.map(p => '<div class="plan'+(p.id===state.plan?' on':'')+'" data-plan="'+p.id+'" role="button" tabindex="0"><div class="hd"><span class="lt">'+p.id+'</span><div><div class="tag">'+p.tipp+'</div><h3>'+p.titel+'</h3></div></div><p>'+p.kurz+'</p>'+
     '<div class="tl"><span>☁ '+p.wetter+'</span>'+p.touren.map(n => '<span>Tour '+n+'</span>').join('')+'</div></div>').join('');
@@ -368,7 +377,7 @@ function renderOver(f){
   $('tbl').innerHTML = '<tr><th>Tour</th><th>Niveau</th><th class="n">Länge</th><th class="n">Gehzeit</th><th class="n">Aufstieg</th><th class="n">Start ca.</th><th class="n">Höchster Punkt</th><th class="n">Gesamt ab Chalet</th><th>Links</th></tr>' +
     f.map(r => '<tr><td>'+r.nr+' · '+r.name+'</td><td><span class="pill '+r.niveau+'">'+r.niveau+'</span></td><td class="n">'+de1(r.km)+' km</td><td class="n">'+fmtH(r.geh)+
       '</td><td class="n">'+r.hm+' Hm</td><td class="n">'+fmtM(r.start_hoehe)+'</td><td class="n">'+fmtM(r.top)+'</td><td class="n">'+fmtH(r.gesamt)+
-      '</td><td><a href="'+r.url+'" target="_blank" rel="noopener">Tour</a> · <a href="'+r.maps+'" target="_blank" rel="noopener">Maps</a></td></tr>').join('');
+      '</td><td><a href="'+r.url+'" target="_blank" rel="noopener">Tour</a> · <a href="'+mapsUrl(r)+'" target="_blank" rel="noopener">Maps</a></td></tr>').join('');
 }
 
 function profileXY(r){
@@ -430,7 +439,7 @@ function renderDetail(f){
     '<div class="m"><div><b>'+de1(r.km)+' km</b><span>Länge</span></div><div><b>'+fmtH(r.geh)+'</b><span>Gehzeit</span></div><div><b>'+r.hm+' Hm</b><span>Aufstieg</span></div><div><b>'+fmtM(r.start_hoehe)+'</b><span>Start ca.</span></div><div><b>'+fmtM(r.top)+'</b><span>Höchster Punkt</span></div></div>'+
     '<p><b>Start:</b> '+r.start_ort+'</p><p><b>Route:</b> '+r.weg+'</p><p><b>Highlights</b></p><ul>'+r.plus.map(p => '<li>'+p+'</li>').join('')+'</ul><p><b>Gut zu wissen:</b> '+r.info+'</p>'+
     '<p><b>Ab Chalet:</b> Anfahrt ca. '+r.fahrt+' Min (einfach, Schätzung) · Gesamtdauer '+fmtH(r.gesamt)+' · Auto: '+r.auto+'</p>'+
-    '<a class="btn" href="'+r.url+'" target="_blank" rel="noopener">Tourenseite mit Karte</a><a class="btn" href="'+r.maps+'" target="_blank" rel="noopener">Route in Google Maps</a></div>';
+    '<a class="btn" href="'+r.url+'" target="_blank" rel="noopener">Tourenseite mit Karte</a><a class="btn" href="'+mapsUrl(r)+'" target="_blank" rel="noopener">Route in Google Maps</a></div>';
 }
 
 function renderWetter(){
@@ -476,6 +485,8 @@ $('tabs').addEventListener('click', e => { const b = e.target.closest('button');
 ['leicht','mittel'].forEach(n => $('f-'+n).addEventListener('click', e => { state.niv[n] = !state.niv[n]; e.currentTarget.setAttribute('aria-pressed', state.niv[n]); render(); }));
 $('f-geh').addEventListener('input', e => { state.geh = +e.target.value; $('v-geh').textContent = fmtH(state.geh); render(); });
 $('f-hm').addEventListener('input', e => { state.hm = +e.target.value; $('v-hm').textContent = state.hm + ' Hm'; render(); });
+['chalet','hier'].forEach(k => $('ab-'+k).addEventListener('click', () => { state.ab = k === 'chalet' ? 'chalet' : 'hier';
+  $('ab-chalet').setAttribute('aria-pressed', state.ab === 'chalet'); $('ab-hier').setAttribute('aria-pressed', state.ab !== 'chalet'); render(); }));
 $('f-maut').addEventListener('change', e => { state.ohneMaut = e.target.checked; render(); });
 $('sel-profil').addEventListener('change', render);
 $('sel-detail').addEventListener('change', render);

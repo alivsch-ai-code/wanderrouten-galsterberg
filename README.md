@@ -15,7 +15,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Optional: `CHALET_ADRESSE="Straße, PLZ Ort"` setzen, dann startet die Google-Maps-Route an der Hütte. Das Repo ist öffentlich, deshalb steht die Adresse nicht im Code.
+Die Google-Maps-Routen starten am Chalet. Auf der Seite lässt sich auf „Mein Standort“ umschalten. Anderer Startpunkt: Umgebungsvariable `CHALET_ADRESSE` setzen.
 
 ## Statische Seite neu bauen
 

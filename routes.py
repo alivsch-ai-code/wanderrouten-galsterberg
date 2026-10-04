@@ -9,9 +9,8 @@ from urllib.parse import quote_plus
 
 import pandas as pd
 
-# Optional: Adresse der Unterkunft als Umgebungsvariable setzen, dann enthalten die Maps-Links den Startpunkt.
-# Ohne Angabe plant Google Maps die Route ab dem aktuellen Standort.
-CHALET = os.environ.get("CHALET_ADRESSE", "")
+# Startpunkt der Maps-Routen (Unterkunft). Mit CHALET_ADRESSE="" startet Google Maps am aktuellen Standort.
+CHALET = os.environ.get("CHALET_ADRESSE", "342 Pruggererberg II, 8965 Pruggern")
 MAUT_PKW = 20  # Euro pro Pkw, Stoderzinken-Mautstraße
 
 
