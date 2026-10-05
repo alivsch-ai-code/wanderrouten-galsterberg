@@ -16,8 +16,11 @@ routes = []
 for r in df.to_dict("records"):
     r["maps"] = maps_url(r["dest"])
     r["wetter"] = sorted(r["wetter"])
-    r["huette"] = None if r.get("huette") != r.get("huette") else r.get("huette")
-    routes.append({k: (v.item() if hasattr(v, "item") else v) for k, v in r.items()})
+    clean = {}
+    for k, v in r.items():
+        v = v.item() if hasattr(v, "item") else v
+        clean[k] = None if isinstance(v, float) and v != v else v
+    routes.append(clean)
 
 DATA = {"routes": routes, "wetter": WETTER, "maut": MAUT_PKW, "plaene": PLAENE, "chalet": CHALET}
 data_json = json.dumps(DATA, ensure_ascii=False).replace("</", "<\\/")
@@ -31,8 +34,8 @@ HTML = r"""<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:light dark;--bg:#fcfcfb;--card:#f3f6fa;--ink:#0b0b0b;--muted:#52514e;--line:#d5dce6;--blue:#2a78d6;--orange:#eb6834;--accent:#1b3a66}
-@media (prefers-color-scheme:dark){:root{--bg:#1a1a19;--card:#242423;--ink:#fff;--muted:#c3c2b7;--line:#3a3a38;--blue:#3987e5;--orange:#d95926;--accent:#9db8e8}}
+:root{color-scheme:light dark;--bg:#fcfcfb;--card:#f3f6fa;--ink:#0b0b0b;--muted:#52514e;--line:#d5dce6;--blue:#2a78d6;--orange:#eb6834;--red:#b4232f;--accent:#1b3a66}
+@media (prefers-color-scheme:dark){:root{--bg:#1a1a19;--card:#242423;--ink:#fff;--muted:#c3c2b7;--line:#3a3a38;--blue:#3987e5;--orange:#d95926;--red:#e0525c;--accent:#9db8e8}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .hero{position:relative;color:#fff;overflow:hidden;min-height:clamp(300px,46vw,470px);display:flex;align-items:flex-end}
@@ -53,6 +56,7 @@ main{padding-top:18px!important}
 .cover svg,.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .cover .nr{position:absolute;left:12px;top:12px;width:30px;height:30px;border-radius:50%;background:rgba(10,20,40,.55);backdrop-filter:blur(4px);color:#fff;font-weight:700;display:grid;place-items:center;font-size:14px}
 .cover .pill{position:absolute;right:12px;top:14px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.cover .kbadge{position:absolute;left:50px;top:16px;background:#6aa127;color:#fff;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 9px}
 .cover .alt{position:absolute;right:12px;bottom:10px;color:#fff;font-weight:700;font-size:13px;text-shadow:0 1px 6px rgba(0,0,0,.6)}
 .cbody{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
 .cbody h3{margin:0;font-size:17px;line-height:1.25}
@@ -79,6 +83,9 @@ main{padding-top:18px!important}
 .plan .tl span{font-size:12px;background:var(--bg);border-radius:999px;padding:3px 9px}
 .tline{scroll-margin-top:60px;background:var(--card);border-radius:16px;padding:16px 18px;margin:-8px 0 22px}
 .tline h3{margin:0 0 4px}
+.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0 6px}
+.teams div{background:var(--bg);border-radius:12px;padding:10px 12px;font-size:13.5px}
+.teams b{display:block;margin-bottom:2px;color:var(--accent)}
 .tline ol{list-style:none;margin:10px 0 0;padding:0;position:relative}
 .tline ol::before{content:"";position:absolute;left:52px;top:6px;bottom:6px;width:2px;background:var(--line)}
 .tline li{display:grid;grid-template-columns:44px 1fr;gap:22px;padding:6px 0;position:relative;font-size:14px}
@@ -123,7 +130,7 @@ td.n,th.n{text-align:right;white-space:nowrap}
 }
 a{color:var(--blue)}
 .pill{display:inline-block;padding:1px 9px;border-radius:999px;font-size:12px;color:#fff}
-.pill.leicht{background:var(--blue)}.pill.mittel{background:var(--orange)}
+.pill.leicht{background:var(--blue)}.pill.mittel{background:var(--orange)}.pill.schwer{background:var(--red)}
 select,input[type=number]{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 .detail{background:var(--card);border-radius:10px;padding:14px 16px;margin-top:10px}
 .detail .m{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:10px 0}
@@ -150,8 +157,9 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   <span>Niveau:</span>
   <button class="chip" id="f-leicht" aria-pressed="true">Leicht</button>
   <button class="chip" id="f-mittel" aria-pressed="true">Mittel</button>
-  <label>Max. Gehzeit <input type="range" id="f-geh" min="60" max="180" step="15" value="180"> <b id="v-geh">3:00 h</b></label>
-  <label>Max. Aufstieg <input type="range" id="f-hm" min="0" max="500" step="5" value="500"> <b id="v-hm">500 Hm</b></label>
+  <button class="chip" id="f-schwer" aria-pressed="true">Schwer</button>
+  <label>Max. Gehzeit <input type="range" id="f-geh" min="60" max="330" step="15" value="330"> <b id="v-geh">5:30 h</b></label>
+  <label>Max. Aufstieg <input type="range" id="f-hm" min="0" max="1000" step="10" value="1000"> <b id="v-hm">1000 Hm</b></label>
   <label><input type="checkbox" id="f-maut"> ohne Mautstraße</label>
   <span class="abwahl">Route ab: <button class="chip" id="ab-chalet" aria-pressed="true">Chalet</button> <button class="chip" id="ab-hier" aria-pressed="false">Mein Standort</button></span>
 </div>
@@ -174,7 +182,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
   <div class="cards" id="cards"></div>
   <div class="grid2">
     <div><h2>Aufwand: Gehzeit gegen Aufstieg</h2><div id="c-bubble" class="chart"></div><div class="note">Blasengröße = Länge in km. Die Zahl im Kreis ist die Tour-Nummer.</div></div>
-    <div><h2>Aufstieg je Tour</h2><div id="c-bar" class="chart"></div><div class="note">Blau = leicht, orange = mittel.</div></div>
+    <div><h2>Aufstieg je Tour</h2><div id="c-bar" class="chart"></div><div class="note">Blau = leicht, orange = mittel, rot = schwer.</div></div>
   </div>
   <h2>Alle Touren im Überblick</h2>
   <div class="tw"><table id="tbl"></table></div>
@@ -214,7 +222,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
 <section class="tab" id="t-check">
   <div class="grid2">
     <div><h2>Checkliste für Eugen</h2><ul class="chk" id="chk-e"></ul></div>
-    <div><h2>Ausrüstung</h2><ul class="chk" id="chk-g"></ul></div>
+    <div><h2>Packliste (von Eugen)</h2><ul class="chk" id="chk-g"></ul></div>
   </div>
   <div class="msg err">Notruf: Bergrettung 140 · Euro-Notruf 112. Bei Unfall oder Wetterumschwung früh umkehren, Gruppe zusammenhalten.</div>
 </section>
@@ -231,12 +239,13 @@ const fmtH = m => Math.floor(m/60) + ':' + String(m%60).padStart(2,'0') + ' h';
 const fmtM = v => Math.round(v).toLocaleString('de-DE') + ' m';
 const de1 = v => v.toFixed(1).replace('.', ',');
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const state = {niv:{leicht:true, mittel:true}, geh:180, hm:500, ohneMaut:false, tab:'ueber', lage:Object.keys(D.wetter)[0]};
+const state = {niv:{leicht:true, mittel:true, schwer:true}, geh:330, hm:1000, ohneMaut:false, tab:'ueber', lage:Object.keys(D.wetter)[0]};
 
 function filtered(){
   return ALL.filter(r => state.niv[r.niveau] && r.geh <= state.geh && r.hm <= state.hm && !(state.ohneMaut && r.maut));
 }
-function col(n){ return n === 'leicht' ? css('--blue') : css('--orange'); }
+function col(n){ return n === 'leicht' ? css('--blue') : n === 'mittel' ? css('--orange') : css('--red'); }
+const NIV = ['leicht','mittel','schwer'];
 function layout(extra){
   return Object.assign({margin:{l:10,r:10,t:30,b:40}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
     font:{color:css('--muted'), size:12}, legend:{orientation:'h', y:1.12, x:0}, hoverlabel:{font:{size:13}}}, extra);
@@ -325,7 +334,7 @@ const ICO = {
 };
 const photo = t => '<img src="img/tour-'+t.nr+'.jpg" alt="'+t.kurz+'" loading="lazy" onerror="this.remove()">';
 function renderCards(f){
-  $('cards').innerHTML = f.map(t => '<article class="card"><div class="cover">'+tourArt(t)+photo(t)+'<span class="nr">'+t.nr+'</span><span class="pill '+t.niveau+'">'+t.niveau+'</span><span class="alt">▲ '+fmtM(t.top)+'</span></div>'+
+  $('cards').innerHTML = f.map(t => '<article class="card"><div class="cover">'+tourArt(t)+photo(t)+'<span class="nr">'+t.nr+'</span><span class="pill '+t.niveau+'">'+t.niveau+'</span>'+(t.komoot ? '<span class="kbadge">Komoot</span>' : '')+'<span class="alt">▲ '+fmtM(t.top)+'</span></div>'+
     '<div class="cbody"><h3>'+t.name+'</h3><p>'+t.plus[0]+'</p>'+
     '<div class="stats"><div>'+ICO.km+'<b>'+de1(t.km)+' km</b><span>Länge</span></div><div>'+ICO.geh+'<b>'+fmtH(t.geh)+'</b><span>Gehzeit</span></div><div>'+ICO.hm+'<b>'+t.hm+'</b><span>Hm</span></div><div>'+ICO.top+'<b>'+fmtH(t.gesamt)+'</b><span>ab Chalet</span></div></div>'+
     '<div class="cact"><a class="btn" href="#" data-open="'+t.nr+'">Details</a><a class="btn ghost" href="'+mapsUrl(t)+'" target="_blank" rel="noopener">Maps</a></div></div></article>').join('');
@@ -344,7 +353,7 @@ function renderPlans(){
     '<div class="tl"><span>☁ '+p.wetter+'</span>'+p.touren.map(n => '<span>Tour '+n+'</span>').join('')+'</div></div>').join('');
   const p = D.plaene.find(x => x.id === state.plan);
   const ts = p.touren.map(n => ALL.find(r => r.nr === n));
-  $('tline').innerHTML = '<h3>Plan '+p.id+': '+p.titel+'</h3><div class="note">'+p.plus.join(' · ')+'</div><ol>'+p.plan.map(([t, x]) => '<li><b>'+t+'</b><span>'+x+'</span></li>').join('')+'</ol>'+
+  $('tline').innerHTML = '<h3>Plan '+p.id+': '+p.titel+'</h3><div class="note">'+p.plus.join(' · ')+'</div>'+(p.teams ? '<div class="teams">'+p.teams.map(([t, x]) => '<div><b>'+t+'</b><span>'+x+'</span></div>').join('')+'</div>' : '')+'<ol>'+p.plan.map(([t, x]) => '<li><b>'+t+'</b><span>'+x+'</span></li>').join('')+'</ol>'+
     '<div class="tchips">'+ts.map(r => '<a href="#" data-open="'+r.nr+'">'+r.nr+' · '+r.kurz+' · '+fmtH(r.geh)+' · '+r.hm+' Hm →</a>').join('')+'</div>';
 }
 document.addEventListener('click', e => { const g = e.target.closest('[data-goplan]'); if (g){ e.preventDefault(); state.plan = g.dataset.goplan; setTab('ueber'); $('plans').scrollIntoView({behavior:'smooth'}); } });
@@ -359,33 +368,35 @@ function renderKpis(f){
 }
 
 function renderOver(f){
-  const traces = ['leicht','mittel'].map(n => {
+  const traces = NIV.map(n => {
     const d = f.filter(r => r.niveau === n);
     return {type:'scatter', mode:'markers+text', name:n[0].toUpperCase()+n.slice(1), x:d.map(r => r.geh/60), y:d.map(r => r.hm),
       text:d.map(r => String(r.nr)), textfont:{color:'#fff', size:12}, textposition:'middle center',
-      marker:{size:d.map(r => r.km*9+14), color:col(n), line:{color:css('--bg'), width:2}},
+      marker:{size:d.map(r => r.km*6+14), color:col(n), line:{color:css('--bg'), width:2}},
       customdata:d.map(r => [r.kurz, r.km, r.top]),
       hovertemplate:'<b>%{customdata[0]}</b><br>Gehzeit %{x:.2f} h<br>Aufstieg %{y} Hm<br>Länge %{customdata[1]} km<br>Höchster Punkt %{customdata[2]} m<extra></extra>'};
   });
-  plot('c-bubble', traces, layout({height:400, xaxis:{title:'Gehzeit (Stunden)', range:[0.6,2.9], gridcolor:grid, zeroline:false},
-    yaxis:{title:'Aufstieg (Höhenmeter)', automargin:true, range:[-90,590], gridcolor:grid, zeroline:false}}));
+  plot('c-bubble', traces, layout({height:400, xaxis:{title:'Gehzeit (Stunden)', range:[0.5,6.2], gridcolor:grid, zeroline:false},
+    yaxis:{title:'Aufstieg (Höhenmeter)', automargin:true, range:[-120,1080], gridcolor:grid, zeroline:false}}));
   const s = f.slice().sort((a,b) => a.hm - b.hm);
   plot('c-bar', [{type:'bar', orientation:'h', x:s.map(r => r.hm), y:s.map(r => r.nr + '  ' + r.kurz),
     marker:{color:s.map(r => col(r.niveau)), cornerradius:4}, text:s.map(r => r.hm + ' Hm'), textposition:'outside', cliponaxis:false,
     hovertemplate:'<b>%{y}</b><br>%{x} Hm<extra></extra>'}],
-    layout({height:400, showlegend:false, xaxis:{range:[0,620], gridcolor:grid, zeroline:false}, yaxis:{automargin:true}}));
+    layout({height:400, showlegend:false, xaxis:{range:[0,1120], gridcolor:grid, zeroline:false}, yaxis:{automargin:true}}));
   $('tbl').innerHTML = '<tr><th>Tour</th><th>Niveau</th><th class="n">Länge</th><th class="n">Gehzeit</th><th class="n">Aufstieg</th><th class="n">Start ca.</th><th class="n">Höchster Punkt</th><th class="n">Gesamt ab Chalet</th><th>Links</th></tr>' +
     f.map(r => '<tr><td>'+r.nr+' · '+r.name+'</td><td><span class="pill '+r.niveau+'">'+r.niveau+'</span></td><td class="n">'+de1(r.km)+' km</td><td class="n">'+fmtH(r.geh)+
       '</td><td class="n">'+r.hm+' Hm</td><td class="n">'+fmtM(r.start_hoehe)+'</td><td class="n">'+fmtM(r.top)+'</td><td class="n">'+fmtH(r.gesamt)+
-      '</td><td><a href="'+r.url+'" target="_blank" rel="noopener">Tour</a> · <a href="'+mapsUrl(r)+'" target="_blank" rel="noopener">Maps</a></td></tr>').join('');
+      '</td><td><a href="'+r.url+'" target="_blank" rel="noopener">'+(r.komoot ? 'Komoot' : 'Tour')+'</a> · <a href="'+mapsUrl(r)+'" target="_blank" rel="noopener">Maps</a></td></tr>').join('');
 }
 
 function profileXY(r){
   if (r.top < 1000) return [[0,.25,.5,.75,1], [r.start_hoehe, r.start_hoehe + r.hm*.5, r.top, r.start_hoehe + r.hm*.4, r.start_hoehe]];
-  return [[0,.5,1], [r.start_hoehe, r.top, r.start_hoehe]];
+  const pk = r.peak || .5;
+  if (r.huette_km) return [[0, r.huette_km/r.km, pk, 1], [r.start_hoehe, r.huette, r.top, r.start_hoehe]];
+  return [[0,pk,1], [r.start_hoehe, r.top, r.start_hoehe]];
 }
 function renderHoehe(f){
-  const traces = ['leicht','mittel'].map(n => {
+  const traces = NIV.map(n => {
     const d = f.filter(r => r.niveau === n).sort((a,b) => a.top - b.top);
     return {type:'bar', orientation:'h', name:n[0].toUpperCase()+n.slice(1), y:d.map(r => r.nr + '  ' + r.kurz), x:d.map(r => r.hm), base:d.map(r => r.start_hoehe),
       marker:{color:col(n), cornerradius:4, line:{color:css('--bg'), width:2}},
@@ -406,7 +417,7 @@ function renderHoehe(f){
   const im = ys.indexOf(Math.max(...ys));
   ann.push({x:xs[im]*r.km, y:ys[im], text:'Höchster Punkt ' + fmtM(r.top), showarrow:true, arrowhead:0, ay:-30, font:{color:css('--muted')}});
   if (r.huette){
-    const frac = (r.huette - r.start_hoehe)/r.hm*.5;
+    const frac = r.huette_km ? r.huette_km/r.km : (r.huette - r.start_hoehe)/r.hm*(r.peak || .5);
     tr.push({type:'scatter', mode:'markers', x:[frac*r.km], y:[r.huette], marker:{size:11, symbol:'diamond', color:col(r.niveau), line:{color:css('--bg'), width:2}}, hovertemplate:'Pleschnitzzinken Hütte 1.911 m<extra></extra>'});
     ann.push({x:frac*r.km, y:r.huette, text:'Hütte 1.911 m', showarrow:false, xanchor:'right', yanchor:'bottom', font:{color:css('--muted')}});
   }
@@ -439,7 +450,7 @@ function renderDetail(f){
     '<div class="m"><div><b>'+de1(r.km)+' km</b><span>Länge</span></div><div><b>'+fmtH(r.geh)+'</b><span>Gehzeit</span></div><div><b>'+r.hm+' Hm</b><span>Aufstieg</span></div><div><b>'+fmtM(r.start_hoehe)+'</b><span>Start ca.</span></div><div><b>'+fmtM(r.top)+'</b><span>Höchster Punkt</span></div></div>'+
     '<p><b>Start:</b> '+r.start_ort+'</p><p><b>Route:</b> '+r.weg+'</p><p><b>Highlights</b></p><ul>'+r.plus.map(p => '<li>'+p+'</li>').join('')+'</ul><p><b>Gut zu wissen:</b> '+r.info+'</p>'+
     '<p><b>Ab Chalet:</b> Anfahrt ca. '+r.fahrt+' Min (einfach, Schätzung) · Gesamtdauer '+fmtH(r.gesamt)+' · Auto: '+r.auto+'</p>'+
-    '<a class="btn" href="'+r.url+'" target="_blank" rel="noopener">Tourenseite mit Karte</a><a class="btn" href="'+mapsUrl(r)+'" target="_blank" rel="noopener">Route in Google Maps</a></div>';
+    '<a class="btn" href="'+r.url+'" target="_blank" rel="noopener">'+(r.komoot ? 'In Komoot öffnen' : 'Tourenseite mit Karte')+'</a><a class="btn" href="'+mapsUrl(r)+'" target="_blank" rel="noopener">Route in Google Maps</a></div>';
 }
 
 function renderWetter(){
@@ -452,7 +463,7 @@ function renderWetter(){
 }
 
 const CHK_E = ['Wetter und Schneelage am Vorabend prüfen','Plan nach Wetter wählen und Gruppen einteilen (Gipfel / Hütte)','Galsterbergalm: Tisch für 9 reservieren (+43 676 951 8228)','Fahrgemeinschaften und Abfahrtszeit festlegen','Plan B: Maut 20 € pro Auto, Öffnung Steinerhaus/Rosemi Alm prüfen','Notruf und Treffpunkt im Chat teilen'];
-const CHK_G = ['Wanderschuhe mit Profil','Warme Schichten, Mütze','Regen- und Windjacke','Trinkflasche (1 l)','Gipfel-Brotzeit','Stirnlampe','Powerbank, Offline-Karte','Erste-Hilfe-Set','Sonnenbrille'];
+const CHK_G = ['Wanderschuhe mit gutem Profil, am besten wasserabweisend (keine Sneaker, Wege können nass und rutschig sein)','Fleece oder warme dünne Jacke','Lange Wanderhose','Warme Wandersocken','Dünne Mütze oder Stirnband','Regen- und Windjacke','Trinkflasche (1 l) und Gipfel-Brotzeit','Stirnlampe (Tour 8)','Powerbank, Komoot offline','Erste-Hilfe-Set, Sonnenbrille'];
 function lsGet(k){ try { return localStorage.getItem(k) === '1'; } catch(e){ return false; } }
 function lsSet(k,v){ try { localStorage.setItem(k, v ? '1' : '0'); } catch(e){} }
 function renderChecks(){
@@ -482,7 +493,7 @@ function setTab(t){
   render();
 }
 $('tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setTab(b.dataset.t); });
-['leicht','mittel'].forEach(n => $('f-'+n).addEventListener('click', e => { state.niv[n] = !state.niv[n]; e.currentTarget.setAttribute('aria-pressed', state.niv[n]); render(); }));
+NIV.forEach(n => $('f-'+n).addEventListener('click', e => { state.niv[n] = !state.niv[n]; e.currentTarget.setAttribute('aria-pressed', state.niv[n]); render(); }));
 $('f-geh').addEventListener('input', e => { state.geh = +e.target.value; $('v-geh').textContent = fmtH(state.geh); render(); });
 $('f-hm').addEventListener('input', e => { state.hm = +e.target.value; $('v-hm').textContent = state.hm + ' Hm'; render(); });
 ['chalet','hier'].forEach(k => $('ab-'+k).addEventListener('click', () => { state.ab = k === 'chalet' ? 'chalet' : 'hier';

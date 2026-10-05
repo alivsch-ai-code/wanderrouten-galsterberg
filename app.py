@@ -22,7 +22,7 @@ try:
     DARK = st.context.theme.type == "dark"
 except Exception:
     DARK = False
-COL = {"leicht": "#3987e5" if DARK else "#2a78d6", "mittel": "#d95926" if DARK else "#eb6834"}
+COL = {"leicht": "#3987e5" if DARK else "#2a78d6", "mittel": "#d95926" if DARK else "#eb6834", "schwer": "#e0525c" if DARK else "#b4232f"}
 SURFACE = "#1a1a19" if DARK else "#fcfcfb"
 INK2 = "#c3c2b7" if DARK else "#52514e"
 GRID = "rgba(150,150,150,0.25)"
@@ -41,9 +41,9 @@ def style(fig, height=380, legend=True):
 # Sidebar-Filter
 # ----------------------------------------------------------------------------
 st.sidebar.header("Filter")
-niveaus = st.sidebar.multiselect("Niveau", ["leicht", "mittel"], default=["leicht", "mittel"])
-max_geh = st.sidebar.slider("Max. Gehzeit (Std.)", 1.0, 3.0, 3.0, 0.25)
-max_hm = st.sidebar.slider("Max. Aufstieg (Hm)", 0, 500, 500, 5)
+niveaus = st.sidebar.multiselect("Niveau", ["leicht", "mittel", "schwer"], default=["leicht", "mittel", "schwer"])
+max_geh = st.sidebar.slider("Max. Gehzeit (Std.)", 1.0, 5.5, 5.5, 0.25)
+max_hm = st.sidebar.slider("Max. Aufstieg (Hm)", 0, 1000, 1000, 10)
 nur_auto_frei = st.sidebar.checkbox("Nur Touren ohne Mautstraße", value=False)
 st.sidebar.divider()
 st.sidebar.caption("Anfahrt, Pausen und Gesamtdauer sind Schätzungen für eine Unterkunft am Pruggererberg. "
@@ -84,6 +84,9 @@ with tab_plan:
     p = next(x for x in PLAENE if x["id"] == wahl)
     st.markdown(f"**{p['tipp']}** · Wetter: {p['wetter']}  \n{p['kurz']}")
     st.caption(" · ".join(p["plus"]))
+    if p.get("teams"):
+        for col, (team, txt) in zip(st.columns(len(p["teams"])), p["teams"]):
+            col.markdown(f"**{team}**  \n{txt}")
     for zeit, was in p["plan"]:
         st.markdown(f"**{zeit}** &nbsp; {was}")
     st.dataframe(df[df["nr"].isin(p["touren"])].assign(Tour=lambda d: d["nr"].astype(str) + "  " + d["name"], Gehzeit=lambda d: d["geh"].map(fmt_h),
@@ -98,7 +101,7 @@ with tab_ueber:
     with c1:
         st.subheader("Aufwand: Gehzeit gegen Aufstieg")
         fig = go.Figure()
-        for niv in ["leicht", "mittel"]:
+        for niv in ["leicht", "mittel", "schwer"]:
             d = f[f["niveau"] == niv]
             if d.empty:
                 continue
@@ -123,7 +126,7 @@ with tab_ueber:
         fig.update_xaxes(range=[0, 600], title=None)
         fig.update_yaxes(title=None)
         st.plotly_chart(style(fig, 400, legend=False), width="stretch")
-        st.caption("Blau = leicht, orange = mittel.")
+        st.caption("Blau = leicht, orange = mittel, rot = schwer.")
 
     st.subheader("Alle Touren im Überblick")
     show = f.assign(Tour=f["nr"].astype(str) + "  " + f["name"], Niveau=f["niveau"].str.capitalize(),
@@ -146,7 +149,7 @@ with tab_ueber:
 with tab_hoehe:
     st.subheader("Höhenbereich je Tour")
     fig = go.Figure()
-    for niv in ["leicht", "mittel"]:
+    for niv in ["leicht", "mittel", "schwer"]:
         d = f[f["niveau"] == niv].sort_values("top")
         if d.empty:
             continue
@@ -160,7 +163,7 @@ with tab_hoehe:
     fig.update_yaxes(title=None, autorange="reversed")
     st.plotly_chart(style(fig, 360), width="stretch")
     st.caption("Balken von der Starthöhe bis zum höchsten Punkt. Starthöhe = höchster Punkt minus Aufstieg (abgeleitet, daher ca.). "
-               "Die Talrunden liegen bei rund 670 bis 720 m, die Bergtouren zwischen 1.600 und 2.100 m.")
+               "Die Talrunden liegen bei rund 670 bis 720 m, die Bergtouren zwischen 1.100 und 2.100 m.")
 
     st.subheader("Vereinfachtes Höhenprofil")
     wahl = st.selectbox("Tour", f["label"].tolist(), key="profil")
@@ -169,14 +172,18 @@ with tab_hoehe:
         xs = [0, 0.25, 0.5, 0.75, 1.0]
         ys = [r["start_hoehe"], r["start_hoehe"] + r["hm"] * 0.5, r["top"], r["start_hoehe"] + r["hm"] * 0.4, r["start_hoehe"]]
     else:
-        xs = [0, 0.5, 1.0]
+        pk = r["peak"] if pd.notna(r.get("peak")) else 0.5
+        xs = [0, pk, 1.0]
         ys = [r["start_hoehe"], r["top"], r["start_hoehe"]]
+        if pd.notna(r.get("huette_km")):
+            xs.insert(1, r["huette_km"] / r["km"])
+            ys.insert(1, r["huette"])
     fig = go.Figure(go.Scatter(x=[x * r["km"] for x in xs], y=ys, mode="lines+markers", line=dict(color=COL[r["niveau"]], width=3),
                                marker=dict(size=9, color=COL[r["niveau"]], line=dict(color=SURFACE, width=2)),
                                fill="tozeroy", fillcolor="rgba(120,140,170,0.12)",
                                hovertemplate="km %{x:.1f}<br>%{y:.0f} m<extra></extra>"))
     if r.get("huette") == r.get("huette") and pd.notna(r.get("huette")):
-        frac = (r["huette"] - r["start_hoehe"]) / r["hm"] * 0.5
+        frac = r["huette_km"] / r["km"] if pd.notna(r.get("huette_km")) else (r["huette"] - r["start_hoehe"]) / r["hm"] * 0.5
         fig.add_trace(go.Scatter(x=[frac * r["km"]], y=[r["huette"]], mode="markers+text", text=["Pleschnitzzinken Hütte (1.911 m)"],
                                  textposition="top left", marker=dict(size=11, color=COL[r["niveau"]], symbol="diamond",
                                                                      line=dict(color=SURFACE, width=2)), showlegend=False,
@@ -232,7 +239,7 @@ with tab_detail:
     wahl = st.selectbox("Tour wählen", f["label"].tolist(), key="detail")
     r = f[f["label"] == wahl].iloc[0]
     st.header(f"{r['nr']} · {r['name']}")
-    st.markdown(f"**Niveau:** :{'green' if r['niveau'] == 'leicht' else 'orange'}[{r['niveau'].capitalize()}] · {r['kondition']}")
+    st.markdown(f"**Niveau:** :{'blue' if r['niveau'] == 'leicht' else 'orange' if r['niveau'] == 'mittel' else 'red'}[{r['niveau'].capitalize()}] · {r['kondition']}")
     m1, m2, m3, m4, m5 = st.columns(5)
     m1.metric("Länge", f"{r['km']:.1f} km".replace(".", ","))
     m2.metric("Gehzeit", fmt_h(r["geh"]))
@@ -280,9 +287,10 @@ with tab_check:
                                "Plan B: Maut 20 € pro Auto, Öffnung Steinerhaus/Rosemi Alm prüfen", "Notruf und Treffpunkt im Chat teilen"]):
             st.checkbox(t, key=f"e{i}")
     with c2:
-        st.subheader("Ausrüstung")
-        for i, t in enumerate(["Wanderschuhe mit Profil", "Warme Schichten, Mütze", "Regen- und Windjacke", "Trinkflasche (1 l)",
-                               "Gipfel-Brotzeit", "Stirnlampe", "Powerbank, Offline-Karte", "Erste-Hilfe-Set", "Sonnenbrille"]):
+        st.subheader("Packliste (von Eugen)")
+        for i, t in enumerate(["Wanderschuhe mit gutem Profil, am besten wasserabweisend (keine Sneaker)", "Fleece oder warme dünne Jacke",
+                               "Lange Wanderhose", "Warme Wandersocken", "Dünne Mütze oder Stirnband", "Regen- und Windjacke",
+                               "Trinkflasche (1 l) und Gipfel-Brotzeit", "Stirnlampe (Tour 8)", "Powerbank, Komoot offline", "Erste-Hilfe-Set, Sonnenbrille"]):
             st.checkbox(t, key=f"g{i}")
     st.error("Notruf: Bergrettung 140 · Euro-Notruf 112. Bei Unfall oder Wetterumschwung früh umkehren, Gruppe zusammenhalten.")
 
