@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan A: Pleschnitzzinken</title>
+<meta name="description" content="Plan A für Samstag: große Pleschnitzzinken-Runde ab Galsterberg-Talstation, mit Zeitplan, Route, Umkehrregeln und Packliste.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:#fcfcfb;--card:#f3f6fa;--ink:#0b0b0b;--muted:#52514e;--line:#d5dce6;--blue:#2a78d6;--orange:#eb6834;--red:#b4232f;--green:#2f7d4a;--accent:#1b3a66}
+@media (prefers-color-scheme:dark){:root{--bg:#1a1a19;--card:#242423;--ink:#fff;--muted:#c3c2b7;--line:#3a3a38;--blue:#3987e5;--orange:#d95926;--red:#e0525c;--green:#5cb77a;--accent:#9db8e8}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--blue)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+.topbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:12px;height:52px;overflow-x:auto;scrollbar-width:none}
+.topbar .wrap::-webkit-scrollbar{display:none}
+.topbar a{white-space:nowrap;text-decoration:none;color:var(--muted);font-size:14px;font-weight:500}
+.topbar a.back{color:var(--accent);font-weight:700;margin-right:6px}
+.hero{position:relative;color:#fff;min-height:clamp(340px,52vw,520px);display:flex;align-items:flex-end;overflow:hidden}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,20,40,0) 30%,rgba(10,20,40,.78) 100%)}
+.hero .wrap{position:relative;z-index:1;padding-bottom:28px;width:100%}
+.fav{display:inline-flex;align-items:center;gap:8px;background:#eb6834;color:#fff;font-weight:700;font-size:13px;border-radius:999px;padding:5px 12px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+h1{font-size:clamp(30px,6vw,56px);line-height:1.04;margin:12px 0 8px;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+.lead{font-size:clamp(15px,2vw,18px);max-width:640px;opacity:.95;margin:0}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:-34px 0 0;position:relative;z-index:2}
+.fact{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 8px 24px rgba(20,40,80,.08)}
+.fact b{display:block;font-size:22px;font-weight:800}.fact span{font-size:12.5px;color:var(--muted)}
+section{padding:34px 0 6px}
+h2{font-size:clamp(22px,3.4vw,30px);margin:0 0 6px;color:var(--accent);letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 16px}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.why div{background:var(--card);border-radius:14px;padding:14px 16px}
+.why b{display:block;margin-bottom:2px}
+.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.team{background:var(--card);border-radius:16px;padding:16px;border-top:5px solid var(--red)}
+.team.h{border-top-color:var(--blue)}.team.c{border-top-color:var(--green)}
+.team h3{margin:0 0 4px}.team .m{font-size:13px;color:var(--muted);margin-bottom:8px}
+.team p{margin:0;font-size:14.5px}
+.profile{background:var(--card);border-radius:16px;padding:12px 12px 4px}
+.profile svg{width:100%;height:auto;display:block}
+.note{font-size:12.5px;color:var(--muted);margin:6px 2px 0}
+.steps{list-style:none;margin:0;padding:0;position:relative}
+.steps::before{content:"";position:absolute;left:19px;top:10px;bottom:10px;width:3px;background:var(--line);border-radius:3px}
+.step{position:relative;padding:0 0 18px 54px}
+.step .dot{position:absolute;left:6px;top:4px;width:29px;height:29px;border-radius:50%;background:var(--accent);color:var(--bg);font-weight:800;font-size:13px;display:grid;place-items:center;box-shadow:0 0 0 4px var(--bg)}
+.step .card{background:var(--card);border-radius:14px;padding:12px 16px}
+.step .hd{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.step .t{font-weight:800;color:var(--orange);font-variant-numeric:tabular-nums}
+.step h3{margin:0;font-size:17px}
+.step .meta{font-size:12.5px;color:var(--muted)}
+.step p{margin:6px 0 0;font-size:14.5px}
+.step .tip{margin-top:8px;font-size:13.5px;background:var(--bg);border-left:3px solid var(--orange);padding:6px 10px;border-radius:6px}
+.timeline{background:var(--card);border-radius:16px;padding:6px 16px}
+.timeline div{display:grid;grid-template-columns:56px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.timeline div:last-child{border-bottom:0}
+.timeline b{color:var(--accent);font-variant-numeric:tabular-nums}
+.rules{display:grid;gap:10px}
+.rule{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:start;background:var(--card);border-radius:14px;padding:12px 14px;border-left:5px solid var(--orange)}
+.rule .k{font-weight:800;font-size:18px;color:var(--orange)}
+.rule b{display:block}.rule span{font-size:14px;color:var(--muted)}
+.sos{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.sos a{flex:1 1 200px;text-align:center;text-decoration:none;background:var(--red);color:#fff;font-weight:800;border-radius:12px;padding:12px;font-size:16px}
+.sos a.alt{background:var(--accent);color:var(--bg)}
+.packbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.progress{flex:1 1 200px;height:10px;background:var(--card);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.progress i{display:block;height:100%;width:0;background:var(--green);transition:width .2s}
+.btn{display:inline-block;padding:9px 14px;border-radius:10px;background:var(--accent);color:var(--bg);text-decoration:none;font-weight:600;font-size:14px;border:0;cursor:pointer;font-family:inherit}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+.packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.pack{background:var(--card);border-radius:16px;padding:14px 16px}
+.pack h3{margin:0}.pack .m{font-size:13px;color:var(--muted);margin-bottom:6px}
+.pack label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);font-size:14.5px;cursor:pointer}
+.pack label:last-child{border-bottom:0}
+.pack input{width:20px;height:20px;margin-top:1px;accent-color:var(--green);flex:0 0 auto}
+.pack label.done span{text-decoration:line-through;color:var(--muted)}
+.eu{font-size:11px;font-weight:700;color:var(--green);border:1px solid var(--green);border-radius:999px;padding:0 6px;margin-left:4px;white-space:nowrap}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+footer{color:var(--muted);font-size:12.5px;padding:30px 0 40px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--accent);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:600px){.facts{margin-top:-24px;grid-template-columns:repeat(3,1fr);gap:8px}.fact{padding:10px}.fact b{font-size:16px}.fact span{font-size:11.5px}.rule{grid-template-columns:62px 1fr}.rule .k{font-size:16px}}
+@media print{.topbar,.hero::after,.sos,.packbar .btn,.links{display:none}.hero{min-height:200px;color:#000}.hero svg{display:none}h1{text-shadow:none}}
+</style>
+</head>
+<body>
+<nav class="topbar"><div class="wrap">
+  <a class="back" href="./">← Alle Touren</a>
+  <a href="#teams">Teams</a><a href="#zeitplan">Zeitplan</a><a href="#route">Route</a><a href="#sicherheit">Sicherheit</a><a href="#packliste">Packliste</a>
+</div></nav>
+
+<header class="hero">
+  <svg id="hero8" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+  <div class="wrap">
+    <span class="fav">★ Favorit von Vadim &amp; Eugen</span>
+    <h1>Plan A: Die große Pleschnitzzinken-Runde</h1>
+    <p class="lead">Samstag, 17. Oktober. Ein ganzer Bergtag ab der Galsterberg-Talstation bis aufs Gipfelkreuz auf 2.112 m, danach gemeinsames Mittagessen mit allen an der Galsterbergalm.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="facts" id="facts"></div>
+
+  <section>
+    <h2>Warum diese Tour?</h2>
+    <p class="sub">Kurz erklärt für alle, die nicht jede Route im Detail lesen wollen.</p>
+    <div class="why">
+      <div><b>⛰️ Richtiger Gipfel</b>Höchster Punkt aller Touren, Rundumblick auf Dachstein und Hochwildstelle.</div>
+      <div><b>🚶 Ohne Auto</b>Start an der Talstation, also direkt in der Nähe des Chalets. Keine Maut, kein Parkplatzstress.</div>
+      <div><b>🍲 Mittag mit allen</b>Der Abstieg führt an der Galsterbergalm vorbei, dort treffen sich alle drei Teams.</div>
+      <div><b>🔥 Banja danach</b>Um 15:30 zurück. Bis dahin hat Team Chalet die Banja angeheizt.</div>
+    </div>
+  </section>
+
+  <section id="teams">
+    <h2>Drei Teams, ein Mittagessen</h2>
+    <p class="sub">Niemand muss den Gipfel machen. Jeder sucht sich sein Team aus.</p>
+    <div class="teams" id="teamcards"></div>
+  </section>
+
+  <section id="zeitplan">
+    <h2>Zeitplan</h2>
+    <p class="sub">Richtwerte. Sonnenaufgang 07:25 Uhr, Sonnenuntergang 18:14 Uhr.</p>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section id="route">
+    <h2>Höhenprofil</h2>
+    <p class="sub">940 Höhenmeter hoch und wieder runter auf 12,5 km.</p>
+    <div class="profile"><svg id="profil" viewBox="0 0 900 300" role="img" aria-label="Höhenprofil der großen Pleschnitzzinken-Runde"></svg></div>
+    <p class="note">Schematisch: Start, Hütte und Gipfel nach Komoot, die Lage der Galsterbergalm ist geschätzt. Der echte Weg hat mehr Auf und Ab.</p>
+  </section>
+
+  <section>
+    <h2>Die Route Schritt für Schritt</h2>
+    <p class="sub">Was euch unterwegs erwartet und worauf ihr achten solltet.</p>
+    <ol class="steps" id="steps"></ol>
+  </section>
+
+  <section id="sicherheit">
+    <h2>Sicherheit &amp; Umkehrregeln</h2>
+    <p class="sub">Vorher vereinbart, damit unterwegs keiner diskutieren muss. Komoot stuft die Tour als schwer ein: 3,2 km alpines Gelände, 8 km loser Untergrund.</p>
+    <div class="rules" id="rules"></div>
+    <div class="sos">
+      <a href="tel:140">🚑 Bergrettung 140</a>
+      <a href="tel:112">🆘 Euro-Notruf 112</a>
+      <a class="alt" href="tel:+436769518228">📞 Galsterbergalm</a>
+    </div>
+    <p class="note">Gruppe bleibt zusammen, der Langsamste gibt das Tempo vor. Im Gruppenchat den Live-Standort teilen.</p>
+  </section>
+
+  <section id="packliste">
+    <h2>Packliste</h2>
+    <p class="sub">Abhaken geht direkt hier, der Stand bleibt auf deinem Handy gespeichert. Punkte mit <span class="eu">Eugen</span> stammen aus seiner Liste im Chat.</p>
+    <div class="packbar">
+      <div class="progress" aria-hidden="true"><i id="pbar"></i></div>
+      <b id="pcount"></b>
+      <button class="btn" id="copy">Packliste für WhatsApp kopieren</button>
+      <button class="btn ghost" id="reset">Zurücksetzen</button>
+    </div>
+    <div class="packs" id="packs"></div>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <div class="links" id="links"></div>
+  </section>
+
+  <footer>Quellen: Komoot (Pruggererberg – Pleschnitzzinken-Gipfel Runde), steiermark.com (Galsterbergalm Hütte, Öffnungszeiten Herbst 2026), schladming-dachstein.at (Pleschnitzzinken). Sonnenzeiten für Pruggern berechnet. Alle Zeiten sind Richtwerte, Bedingungen am Tag selbst prüfen.</footer>
+</main>
+<div class="toast" id="toast">Kopiert ✓</div>
+
+<script id="data" type="application/json">{"t8": {"nr": 8, "name": "Große Pleschnitzzinken-Runde ab Talstation", "kurz": "Große Runde", "niveau": "schwer", "km": 12.5, "geh": 316, "hm": 940, "top": 2112, "start_ort": "Galsterberg Talstation (ca. 1.110 m), nahe Chalet", "kondition": "Komoot: schwer, sehr gute Kondition nötig", "fahrt": 5, "pause": 60, "auto": "Nein bzw. kurz, Start nahe Chalet (Entfernung vor Ort prüfen)", "maut": false, "bus": true, "dest": "Galsterbergbahn Talstation, 8965 Pruggern", "weg": "Von der Talstation über den Pruggererberg (Aussichtspunkt) zur Pleschnitzzinken Hütte (km 5,1), weiter zum Gipfel (km 8,4). Abstieg am Bottinghaus und der Galsterbergalm vorbei zurück zur Talstation.", "plus": ["Eugens Komoot-Vorschlag, Vadim ist dafür", "Ganzer Bergtag mit Gipfel, ohne Auto", "Einkehr an der Galsterbergalm auf dem Abstieg"], "info": "Laut Komoot 12,5 km, 940 Hm, 5:16 h reine Gehzeit, 3,2 km alpines Gelände und 8 km loser Untergrund. Nur für Fitte, früh starten (Sonnenuntergang ca. 18 Uhr). Das Berggasthof Bottinghaus ist laut Komoot geschlossen, die Galsterbergalm hat Sa geöffnet.", "url": "https://www.komoot.de/smarttour/21274399", "komoot": true, "peak": 0.67, "huette": 1911, "huette_km": 5.1, "wetter": ["Klar und stabil"]}, "plan": {"id": "A", "titel": "Drei Teams am Galsterberg", "wetter": "Klar und stabil", "touren": [8, 2, 1], "tipp": "Empfehlung", "kurz": "Jeder wie er mag: Gipfel, gemütliche Hüttenrunde oder Chalet hüten. Mittag gemeinsam an der Galsterbergalm.", "teams": [["Team Gipfel", "Große Runde ab Talstation (8), 940 Hm. Wer es kürzer will: Pleschnitzzinken ab Bottinghaus (2), 490 Hm."], ["Team Hütte", "Galsterbergalm-Runde (1), 1 h, nur 135 Hm. Ideal bei müden Beinen oder schmerzendem Fuß."], ["Team Chalet", "Für alle, die zum Geburtstag feiern gekommen sind und nicht zum Ironman: ausschlafen, Banja anheizen, Essen vorbereiten, Wein kalt stellen. Zum Mittag mit dem Auto zur Galsterbergalm dazustoßen."]], "plan": [["08:30", "Team Gipfel: Start zu Fuß ab Chalet bzw. Galsterberg Talstation (Tour 8)"], ["10:15", "Team Gipfel kurz (Tour 2): Abfahrt am Chalet zum Bottinghaus, Start 10:30"], ["10:45", "Team Gipfel groß an der Pleschnitzzinken Hütte (1.911 m)"], ["11:30", "Team Hütte: Abfahrt am Chalet zum Bottinghaus"], ["11:45", "Team Hütte startet die Galsterbergalm-Runde"], ["12:00", "Team Gipfel groß am Gipfelkreuz (2.112 m), Team Gipfel kurz kurz danach"], ["12:45", "Alle treffen sich an der Galsterbergalmhütte, Team Chalet kommt mit dem Auto dazu"], ["14:15", "Team Gipfel groß steigt zur Talstation ab (ca. 1:15 h), alle anderen fahren zurück"], ["15:30", "Alle am Chalet, Banja ist angeheizt"]], "plus": ["Für jede Kondition etwas", "Mittag gemeinsam", "Banja ist warm, wenn alle zurück sind"]}, "profil": [[0.0, 1108, "Talstation"], [5.5, 1911, "Pleschnitzzinken Hütte"], [8.4, 2112, "Gipfel"], [9.5, 1800, "Galsterbergalm"], [12.5, 1108, "Talstation"]], "etappen": [{"zeit": "08:30", "titel": "Start an der Galsterberg-Talstation", "hoehe": "1.108 m", "km": "km 0", "text": "Treffpunkt für Team Gipfel. Am besten zu Fuß vom Chalet, die Entfernung am Freitag kurz prüfen. Rucksack-Check: Wasser, Jacke, Handy geladen.", "tipp": "Langsam loslegen. Der Tag ist lang, das Tempo gibt der Langsamste vor."}, {"zeit": "ca. 09:30", "titel": "Aufstieg über den Pruggererberg", "hoehe": "Aussichtspunkt", "km": "bis ca. km 3", "text": "Forst- und Wanderwege mit losem Untergrund. Oben laut Komoot „eine herrliche Aussicht auf die Tauern und in das Ennstal“.", "tipp": "Erste Trinkpause und Gruppenfoto mit Ennstal-Blick."}, {"zeit": "ca. 10:45", "titel": "Pleschnitzzinken Hütte", "hoehe": "1.911 m", "km": "ca. km 5–6", "text": "Unbewirtschaftete Hütte über der Baumgrenze, hier gibt es nichts zu kaufen. Gute Stelle für eine Pause im Windschatten.", "tipp": "Checkpoint: Bis 11:00 hier? Dann weiter zum Gipfel. Sonst umkehren und direkt zur Galsterbergalm."}, {"zeit": "ca. 12:00", "titel": "Gipfel Pleschnitzzinken", "hoehe": "2.112 m", "km": "ca. km 8,4", "text": "Über den Grasrücken zum Gipfelkreuz. Rundumblick auf Hochwildstelle, Dachstein und ins Ennstal. Hier oben kann es windig und kalt sein, im Oktober auch um 0 °C.", "tipp": "Gipfelfoto, warme Schicht anziehen, nicht zu lange auskühlen. Spätestens 12:30 Abstieg."}, {"zeit": "12:45", "titel": "Galsterbergalmhütte: alle treffen sich", "hoehe": "ca. 1.800 m", "km": "ca. km 9,5", "text": "Team Hütte und Team Chalet sind schon da. Gemeinsames Mittagessen, Küche 10:30–17 Uhr, Murmeltiere vor der Hütte. Im Herbst Fr–So 9–18 Uhr geöffnet.", "tipp": "Tisch für 9 vorher reservieren: +43 676 951 8228."}, {"zeit": "14:15", "titel": "Abstieg zur Talstation", "hoehe": "1.108 m", "km": "km 9,5 bis 12,5", "text": "Rund 700 Höhenmeter bergab auf ca. 3 km. Das geht in die Knie, Stöcke helfen. Die anderen Teams fahren mit dem Auto zurück.", "tipp": "Konzentriert bleiben, auf nassem Gras und Wurzeln rutscht man leicht."}, {"zeit": "15:30", "titel": "Zurück am Chalet", "hoehe": "", "km": "Ziel", "text": "Team Chalet hat die Banja angeheizt. Duschen, aufwärmen, anstoßen.", "tipp": "Genug trinken vor dem ersten Saunagang."}], "regeln": [["11:00", "Noch nicht an der Pleschnitzzinken Hütte?", "Kein Gipfel. Auf dem Aufstiegsweg zurück und zur Galsterbergalm, dort mit den anderen essen."], ["12:30", "Spätester Gipfelzeitpunkt", "Wer bis dahin nicht oben ist, kehrt um. Der Abstieg braucht mindestens 2 Stunden."], ["15:00", "Spätester Aufbruch an der Galsterbergalm", "Damit alle lange vor Sonnenuntergang (18:14 Uhr) unten sind."], ["Wetter", "Gewitter, dichter Nebel, Neuschnee oder Eis am Grat", "Gipfel streichen und auf Plan C wechseln: Galsterbergalm-Runde mit langer Einkehr."]], "pack": [["Am Körper", "Zwiebelprinzip, keine Baumwolle", [["Wanderschuhe mit gutem Profil, am besten wasserabweisend. Keine normalen Sneaker, Wald- und Wiesenwege können nass und rutschig sein.", true], ["Lange Wanderhose", true], ["Warme Wandersocken", true], ["Funktionsshirt", false], ["Fleece oder warme dünne Jacke", true], ["Dünne Mütze oder Stirnband, wenn ihr schnell friert", true]]], ["Im Rucksack", "Tagesrucksack mit 20–30 Litern", [["Regen- und Windjacke", false], ["Handschuhe, am Gipfel wird es kalt", false], ["Trockenes Wechselshirt für den Gipfel", false], ["1,5 l Wasser oder heißer Tee in der Thermoskanne", false], ["Brotzeit und Snacks für unterwegs (Riegel, Nüsse, Obst)", false], ["Wanderstöcke, sehr hilfreich beim langen Abstieg", false], ["Sonnenbrille und Sonnencreme", false], ["Etwas Bargeld für die Galsterbergalm (Kartenzahlung nicht sicher)", false]]], ["Sicherheit & Technik", "Für den Notfall", [["Handy voll geladen, dazu eine Powerbank", false], ["Komoot-Tour offline gespeichert", false], ["Stirnlampe, Sonnenuntergang um 18:14 Uhr", false], ["Erste-Hilfe-Set mit Blasenpflastern", false], ["Rettungsdecke", false], ["Ausweis und Krankenversicherungskarte", false]]], ["Team Chalet & Team Hütte", "Wer nicht auf den Gipfel geht", [["Festes Schuhwerk und Jacke für die Galsterbergalm", false], ["Autoschlüssel und Fahrer für die Fahrt zum Bottinghaus", false], ["Banja: Holz und Anzünder, Handtücher, Banja-Hüte", false], ["Wein und Getränke kalt stellen für die Rückkehr", false]]]], "sonne": {"auf": "07:25", "unter": "18:14"}, "chalet": "342 Pruggererberg II, 8965 Pruggern", "t1": {"nr": 1, "kurz": "Galsterbergalm", "geh": 60, "hm": 135}, "t2": {"nr": 2, "kurz": "Pleschnitzzinken", "geh": 150, "hm": 490}}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = id => document.getElementById(id);
+const fmtH = m => Math.floor(m/60) + ':' + String(m%60).padStart(2,'0') + ' h';
+const fmtM = v => Math.round(v).toLocaleString('de-DE') + ' m';
+const de1 = v => v.toFixed(1).replace('.', ',');
+// ---------- Illustrationen ----------
+function rng(seed){ let x = seed*9301 + 49297; return () => (x = (x*9301 + 49297) % 233280) / 233280; }
+const SKIES = [['#7fb3e6','#cfe3f5','#f6e7cf'],['#5d93d1','#a9cdee','#f3d9b5'],['#8db7e0','#dcebf7','#fbe9d0'],['#4f86c6','#9fc6ea','#f1d3a8'],['#76a9dd','#c7def3','#f7e3c6'],['#6c9fd6','#bcd7f1','#f5ddb9']];
+function ridge(r, w, base, amp, n, rough){
+  const pts = []; for (let i = 0; i <= n; i++){ const x = i/n*w; pts.push([x, base - amp*(0.45 + 0.55*Math.sin(i*1.7 + r()*2))*(0.6 + r()*rough)]); }
+  return 'M0,' + base + ' ' + pts.map(p => 'L' + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ') + ' L' + w + ',' + base + ' L' + w + ',1000 L0,1000 Z';
+}
+function trees(r, w, y0, y1, n, palette, scale){
+  let o = ''; for (let i = 0; i < n; i++){ const x = r()*w, y = y0 + r()*(y1 - y0), h = (14 + r()*16)*scale*(0.6 + (y - y0)/(y1 - y0 + 1)*0.8), c = palette[Math.floor(r()*palette.length)];
+    o += '<path d="M'+x.toFixed(1)+','+(y-h).toFixed(1)+' L'+(x-h*0.32).toFixed(1)+','+y.toFixed(1)+' L'+(x+h*0.32).toFixed(1)+','+y.toFixed(1)+' Z" fill="'+c+'"/>'; }
+  return o;
+}
+const AUTUMN = ['#2f5a3a','#3b6b45','#c9762d','#d9902f','#9c4a22','#284d33','#e2a43b'];
+function tourArt(t, W, H){
+  W = W || 640; H = H || 360;
+  const r = rng(t.nr*7 + 3), sky = SKIES[(t.nr - 1) % SKIES.length], id = 'g' + t.nr + '_' + W;
+  const hi = Math.min(1, Math.max(0.12, (t.top - 600)/1600));
+  let peakX = W*(0.48 + r()*0.16), peakY = H*(0.70 - hi*0.52), baseY = H*0.80;
+  const lw = W*(0.42 + r()*0.08), rw = W*(0.40 + r()*0.08);
+  const valley = t.top < 1000;
+  const j = () => (r() - 0.5);
+  let mPts, mPath, snow = '', route, sx, sy, fx, fy;
+  if (!valley){
+    mPts = [[peakX - lw, baseY],[peakX - lw*(0.62 + j()*0.2), baseY - (baseY - peakY)*(0.35 + j()*0.2)],[peakX - lw*(0.33 + j()*0.15), baseY - (baseY - peakY)*(0.66 + j()*0.15)],[peakX - lw*0.12, peakY + (baseY - peakY)*(0.08 + r()*0.08)],[peakX, peakY],[peakX + rw*(0.12 + r()*0.08), peakY + (baseY - peakY)*(0.12 + r()*0.1)],[peakX + rw*(0.36 + j()*0.15), baseY - (baseY - peakY)*(0.6 + j()*0.2)],[peakX + rw*(0.68 + j()*0.15), baseY - (baseY - peakY)*(0.3 + j()*0.15)],[peakX + rw, baseY]];
+    if (r() > 0.4){ const k = 0.32 + r()*0.2; mPts.splice(7, 0, [peakX + rw*(0.5 + j()*0.1), baseY - (baseY - peakY)*k]); }
+    mPath = 'M' + mPts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L') + ' Z';
+    if (t.top > 1700) snow = '<path d="M'+(peakX - lw*0.13).toFixed(1)+','+(peakY + (baseY-peakY)*0.12).toFixed(1)+' L'+peakX.toFixed(1)+','+peakY.toFixed(1)+' L'+(peakX + rw*0.15).toFixed(1)+','+(peakY + (baseY-peakY)*0.17).toFixed(1)+' L'+(peakX+rw*0.05).toFixed(1)+','+(peakY+(baseY-peakY)*0.13).toFixed(1)+' L'+(peakX-lw*0.03).toFixed(1)+','+(peakY+(baseY-peakY)*0.19).toFixed(1)+' Z" fill="#fff" opacity=".92"/>';
+    sx = peakX - lw*0.78; sy = baseY - 6; fx = peakX; fy = peakY;
+    route = 'M'+sx.toFixed(1)+','+sy.toFixed(1)+' C'+(sx + (peakX - sx)*0.35).toFixed(1)+','+(sy - 4).toFixed(1)+' '+(peakX - lw*0.45).toFixed(1)+','+(peakY + (baseY-peakY)*0.55).toFixed(1)+' '+(peakX - lw*0.25).toFixed(1)+','+(peakY + (baseY-peakY)*0.42).toFixed(1)+' S'+(peakX - lw*0.05).toFixed(1)+','+(peakY + (baseY-peakY)*0.08).toFixed(1)+' '+peakX.toFixed(1)+','+(peakY + 2).toFixed(1);
+  } else {
+    // Talrunde: hohe Kulisse hinten, Weg durch Wiesen vorne
+    const peaks = [[W*(0.2 + j()*0.1), H*0.22],[W*(0.55 + j()*0.1), H*0.14],[W*(0.85 + j()*0.08), H*0.26]];
+    mPath = peaks.map(([x, y]) => { const w = W*0.26; return 'M'+(x-w).toFixed(1)+','+(H*0.66).toFixed(1)+' L'+(x-w*0.35).toFixed(1)+','+(y+H*0.14).toFixed(1)+' L'+x.toFixed(1)+','+y.toFixed(1)+' L'+(x+w*0.3).toFixed(1)+','+(y+H*0.12).toFixed(1)+' L'+(x+w).toFixed(1)+','+(H*0.66).toFixed(1)+' Z'; }).join(' ');
+    snow = peaks.map(([x, y]) => { const w = W*0.26; return '<path d="M'+(x-w*0.1).toFixed(1)+','+(y+H*0.04).toFixed(1)+' L'+x.toFixed(1)+','+y.toFixed(1)+' L'+(x+w*0.1).toFixed(1)+','+(y+H*0.04).toFixed(1)+' L'+(x+w*0.02).toFixed(1)+','+(y+H*0.06).toFixed(1)+' Z" fill="#fff" opacity=".9"/>'; }).join('');
+    sx = W*0.08; sy = H*0.90; fx = W*0.86; fy = H*0.80;
+    route = 'M'+sx.toFixed(1)+','+sy.toFixed(1)+' C'+(W*0.3).toFixed(1)+','+(H*0.80).toFixed(1)+' '+(W*0.42).toFixed(1)+','+(H*0.95).toFixed(1)+' '+(W*0.6).toFixed(1)+','+(H*0.86).toFixed(1)+' S'+(W*0.78).toFixed(1)+','+(H*0.78).toFixed(1)+' '+fx.toFixed(1)+','+fy.toFixed(1);
+    baseY = H*0.70;
+  }
+  const sun = '<circle cx="'+(W*(0.15 + r()*0.2)).toFixed(1)+'" cy="'+(H*(0.18 + r()*0.08)).toFixed(1)+'" r="'+(H*0.07).toFixed(1)+'" fill="#fff6dc" opacity=".9"/>';
+  const clouds = [0,1].map(i => { const cx = r()*W, cy = H*(0.12 + r()*0.18), s = 0.6 + r()*0.7; return '<g opacity=".75" fill="#fff"><ellipse cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" rx="'+(46*s).toFixed(1)+'" ry="'+(11*s).toFixed(1)+'"/><ellipse cx="'+(cx+18*s).toFixed(1)+'" cy="'+(cy-8*s).toFixed(1)+'" rx="'+(26*s).toFixed(1)+'" ry="'+(12*s).toFixed(1)+'"/></g>'; }).join('');
+  const water = valley ? '<path d="M0,'+(H*0.93).toFixed(1)+' C'+(W*0.3).toFixed(1)+','+(H*0.88).toFixed(1)+' '+(W*0.6).toFixed(1)+','+(H*0.98).toFixed(1)+' '+W+','+(H*0.91).toFixed(1)+' L'+W+','+(H*0.96).toFixed(1)+' C'+(W*0.6).toFixed(1)+','+(H*1.02).toFixed(1)+' '+(W*0.3).toFixed(1)+','+(H*0.93).toFixed(1)+' 0,'+(H*0.98).toFixed(1)+' Z" fill="#7fb0d8" opacity=".85"/>' : '';
+  const flag = '<g transform="translate('+fx.toFixed(1)+','+fy.toFixed(1)+')"><line x1="0" y1="0" x2="0" y2="-22" stroke="#1b2a40" stroke-width="2"/><path d="M0,-22 L15,-17 L0,-12 Z" fill="#eb6834"/></g>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration '+t.kurz+'">'+
+    '<defs><linearGradient id="s'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sky[0]+'"/><stop offset=".6" stop-color="'+sky[1]+'"/><stop offset="1" stop-color="'+sky[2]+'"/></linearGradient>'+
+    '<linearGradient id="m'+id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f9bab"/><stop offset=".55" stop-color="#6c7a8c"/><stop offset="1" stop-color="#4c596b"/></linearGradient>'+
+    '<linearGradient id="v'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7f9a52"/><stop offset="1" stop-color="#55703a"/></linearGradient></defs>'+
+    '<rect width="'+W+'" height="'+H+'" fill="url(#s'+id+')"/>'+sun+clouds+
+    '<path d="'+ridge(r, W, H*0.66, H*0.22, 9, 0.6)+'" fill="#a9b9cf" opacity=".75"/>'+
+    '<path d="'+ridge(r, W, H*0.72, H*0.14, 12, 0.5)+'" fill="#8ea2bb" opacity=".8"/>'+
+    '<path d="'+mPath+'" fill="url(#m'+id+')"/>'+snow+
+    '<path d="'+mPath+'" fill="none"/>'+
+    '<path d="'+ridge(r, W, valley ? H*0.74 : H*0.86, H*0.08, 14, 0.4)+'" fill="url(#v'+id+')"/>'+
+    (valley ? trees(r, W, H*0.70, H*0.78, Math.round(W/12), AUTUMN, H/360*0.8) + '<rect x="0" y="'+(H*0.78).toFixed(1)+'" width="'+W+'" height="'+(H*0.22).toFixed(1)+'" fill="#8aa55a"/>' + water : trees(r, W, H*0.80, H*0.97, Math.round(W/9), AUTUMN, H/360))+
+    '<path d="'+route+'" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55"/>'+
+    '<path d="'+route+'" fill="none" stroke="#eb6834" stroke-width="2.6" stroke-dasharray="7 6" stroke-linecap="round"/>'+
+    '<circle cx="'+sx.toFixed(1)+'" cy="'+sy.toFixed(1)+'" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.5"/>'+flag+'</svg>';
+}
+function heroArt(){
+  const W = 1600, H = 600, r = rng(42);
+  const far = ridge(r, W, H*0.58, H*0.26, 16, 0.7), mid = ridge(r, W, H*0.68, H*0.22, 20, 0.6), near = ridge(r, W, H*0.80, H*0.14, 24, 0.5);
+  let peaks = ''; [[0.18,0.30],[0.47,0.22],[0.74,0.27]].forEach(([px, py]) => { const x = W*px, y = H*py, w = W*0.17;
+    peaks += '<path d="M'+(x-w)+','+(H*0.62)+' L'+(x-w*0.4)+','+(y+H*0.15)+' L'+(x-w*0.1)+','+(y+H*0.03)+' L'+x+','+y+' L'+(x+w*0.2)+','+(y+H*0.06)+' L'+(x+w*0.5)+','+(y+H*0.18)+' L'+(x+w)+','+(H*0.62)+' Z" fill="url(#hm)"/>'+
+             '<path d="M'+(x-w*0.12)+','+(y+H*0.04)+' L'+x+','+y+' L'+(x+w*0.22)+','+(y+H*0.07)+' L'+(x+w*0.08)+','+(y+H*0.06)+' L'+(x-w*0.02)+','+(y+H*0.09)+' Z" fill="#fff" opacity=".9"/>'; });
+  const chalet = '<g transform="translate('+(W*0.62)+','+(H*0.80)+')"><rect x="-34" y="-30" width="68" height="34" fill="#7a4a2a"/><path d="M-44,-28 L0,-62 L44,-28 Z" fill="#4a2c1a"/><rect x="-10" y="-14" width="14" height="18" fill="#f4c46a"/><rect x="12" y="-22" width="12" height="10" fill="#f4c46a"/><rect x="18" y="-58" width="7" height="16" fill="#4a2c1a"/></g>';
+  $('hero-art').innerHTML = '<defs><linearGradient id="hs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f6fae"/><stop offset=".55" stop-color="#9cc0e4"/><stop offset="1" stop-color="#f3cf9c"/></linearGradient>'+
+    '<linearGradient id="hm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9aa6b6"/><stop offset="1" stop-color="#55627a"/></linearGradient>'+
+    '<radialGradient id="hsun"><stop offset="0" stop-color="#fff4d6"/><stop offset="1" stop-color="#fff4d6" stop-opacity="0"/></radialGradient></defs>'+
+    '<rect width="'+W+'" height="'+H+'" fill="url(#hs)"/><circle cx="'+(W*0.86)+'" cy="'+(H*0.30)+'" r="160" fill="url(#hsun)"/><circle cx="'+(W*0.86)+'" cy="'+(H*0.30)+'" r="34" fill="#fff6df"/>'+
+    '<path d="'+far+'" fill="#b4c2d6" opacity=".7"/>'+peaks+'<path d="'+mid+'" fill="#6f8aa6" opacity=".85"/>'+
+    '<path d="'+near+'" fill="#58703f"/>'+trees(r, W, H*0.76, H*1.0, 150, AUTUMN, 1.6)+chalet;
+}
+
+const t = D.t8;
+// Hero
+(function(){ const s = tourArt(t, 1200, 520); $('hero8').innerHTML = s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, ''); })();
+// Facts
+$('facts').innerHTML = [[de1(t.km)+' km','Strecke'],[t.hm+' Hm','hoch & runter'],[fmtH(t.geh),'reine Gehzeit'],['2.112 m','Gipfel'],['1.108 m','Start Talstation'],['schwer','laut Komoot']]
+  .map(([b,s]) => '<div class="fact"><b>'+b+'</b><span>'+s+'</span></div>').join('');
+// Teams
+const TM = {'Team Gipfel':['','Eugen führt, Vadim ist dabei, dazu jeder, der Lust hat','Große Runde (8), Start 08:30. Wer es kürzer mag: Pleschnitzzinken ab Bottinghaus (2), '+fmtH(D.t2.geh)+' und '+D.t2.hm+' Hm, Start 10:30.'],
+            'Team Hütte':['h','Für müde Beine oder einen schmerzenden Fuß','Galsterbergalm-Runde (1): '+fmtH(D.t1.geh)+', nur '+D.t1.hm+' Hm. Abfahrt 11:30 am Chalet, Start 11:45 am Bottinghaus.'],
+            'Team Chalet':['c','Für alle, die zum Geburtstag feiern gekommen sind und nicht zum Ironman','Ausschlafen, Banja anheizen, Essen vorbereiten, Wein kalt stellen. Zum Mittag mit dem Auto zur Galsterbergalm dazustoßen.']};
+$('teamcards').innerHTML = D.plan.teams.map(([n]) => { const [c, m, p] = TM[n]; return '<div class="team '+c+'"><h3>'+n+'</h3><div class="m">'+m+'</div><p>'+p+'</p></div>'; }).join('');
+// Zeitplan
+$('timeline').innerHTML = D.plan.plan.map(([z, x]) => '<div><b>'+z+'</b><span>'+x+'</span></div>').join('');
+// Etappen
+$('steps').innerHTML = D.etappen.map((e, i) => '<li class="step"><span class="dot">'+(i+1)+'</span><div class="card"><div class="hd"><span class="t">'+e.zeit+'</span><h3>'+e.titel+'</h3></div>'+
+  '<div class="meta">'+[e.hoehe, e.km].filter(Boolean).join(' · ')+'</div><p>'+e.text+'</p><div class="tip">💡 '+e.tipp+'</div></div></li>').join('');
+// Regeln
+$('rules').innerHTML = D.regeln.map(([k, b, s]) => '<div class="rule"><div class="k">'+k+'</div><div><b>'+b+'</b><span>'+s+'</span></div></div>').join('');
+// Profil (SVG)
+function drawProfile(){
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const nar = innerWidth < 640, W = nar ? 460 : 900, H = nar ? 330 : 300, L = nar ? 44 : 54, R = nar ? 14 : 20, T = 40, B = 40, fs = nar ? 13 : 13, maxKm = 12.5, lo = 1000, hi = 2250;
+  const x = k => L + k/maxKm*(W - L - R), y = h => T + (hi - h)/(hi - lo)*(H - T - B);
+  const P = D.profil, ink = css('--muted'), line = css('--line'), red = css('--red');
+  let g = '';
+  [1000,1250,1500,1750,2000,2250].forEach(h => { g += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(h)+'" y2="'+y(h)+'" stroke="'+line+'" stroke-width="1"/><text x="'+(L-8)+'" y="'+(y(h)+4)+'" text-anchor="end" font-size="12" fill="'+ink+'">'+h.toLocaleString('de-DE')+'</text>'; });
+  (nar ? [0,4,8,12] : [0,2,4,6,8,10,12]).forEach(k => { g += '<text x="'+x(k)+'" y="'+(H-B+20)+'" text-anchor="middle" font-size="12" fill="'+ink+'">'+k+' km</text>'; });
+  const pts = P.map(p => x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ');
+  g += '<polygon points="'+x(0)+','+y(lo)+' '+pts+' '+x(maxKm)+','+y(lo)+'" fill="'+red+'" opacity=".12"/>';
+  g += '<polyline points="'+pts+'" fill="none" stroke="'+red+'" stroke-width="3.5" stroke-linejoin="round"/>';
+  P.forEach((p, i) => { const up = i !== 3;
+    g += '<circle cx="'+x(p[0])+'" cy="'+y(p[1])+'" r="6" fill="'+red+'" stroke="'+css('--card')+'" stroke-width="2.5"/>';
+    if (i === 4) return;
+    const anchor = i === 0 ? 'start' : (nar && i === 3) ? 'start' : 'middle';
+    const lbl = nar && i === 1 ? 'Hütte' : p[2];
+    g += '<text x="'+x(p[0])+'" y="'+(y(p[1]) + (up ? -14 : 22))+'" text-anchor="'+anchor+'" font-size="13" font-weight="700" fill="'+css('--ink')+'">'+lbl+'</text>'+
+         '<text x="'+x(p[0])+'" y="'+(y(p[1]) + (up ? -30 : 38))+'" text-anchor="'+anchor+'" font-size="12" fill="'+ink+'">'+p[1].toLocaleString('de-DE')+' m</text>';
+  });
+  $('profil').setAttribute('viewBox', '0 0 '+W+' '+H); $('profil').innerHTML = g;
+}
+drawProfile();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawProfile);
+addEventListener('resize', drawProfile);
+// Packliste
+const ls = { get: k => { try { return localStorage.getItem(k) === '1'; } catch(e){ return false; } }, set: (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch(e){} } };
+function renderPack(){
+  let n = 0, done = 0;
+  $('packs').innerHTML = D.pack.map(([titel, sub, items], gi) => '<div class="pack"><h3>'+titel+'</h3><div class="m">'+sub+'</div>'+items.map(([txt, eu], ii) => {
+    const k = 'pa_'+gi+'_'+ii, c = ls.get(k); n++; if (c) done++;
+    return '<label class="'+(c?'done':'')+'"><input type="checkbox" data-k="'+k+'" '+(c?'checked':'')+'><span>'+txt+(eu?' <span class="eu">Eugen</span>':'')+'</span></label>'; }).join('')+'</div>').join('');
+  $('pbar').style.width = (done/n*100)+'%'; $('pcount').textContent = done+' von '+n+' gepackt';
+}
+renderPack();
+$('packs').addEventListener('change', e => { const k = e.target.dataset.k; if (k){ ls.set(k, e.target.checked); renderPack(); } });
+$('reset').addEventListener('click', () => { D.pack.forEach(([,,items], gi) => items.forEach((_, ii) => ls.set('pa_'+gi+'_'+ii, false))); renderPack(); });
+$('copy').addEventListener('click', () => {
+  const txt = '🎒 Packliste Plan A (Pleschnitzzinken, Sa 17.10.)\n\n' + D.pack.map(([titel,, items]) => '*'+titel+'*\n'+items.map(([x]) => '▫️ '+x).join('\n')).join('\n\n') + '\n\nAlle Infos: ' + location.href.split('#')[0];
+  const ok = () => { $('toast').classList.add('on'); setTimeout(() => $('toast').classList.remove('on'), 1600); };
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(ok, () => prompt('Kopieren:', txt)); else prompt('Kopieren:', txt);
+});
+// Links
+const maps = 'https://www.google.com/maps/dir/?api=1' + (D.chalet ? '&origin=' + encodeURIComponent(D.chalet) : '') + '&destination=' + encodeURIComponent(t.dest) + '&travelmode=walking';
+$('links').innerHTML = '<a class="btn" href="'+t.url+'" target="_blank" rel="noopener">Tour in Komoot öffnen</a><a class="btn ghost" href="'+maps+'" target="_blank" rel="noopener">Weg Chalet → Talstation</a><a class="btn ghost" href="./">Alle Touren &amp; Pläne</a>';
+</script>
+</body>
+</html>

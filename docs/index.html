@@ -66,6 +66,11 @@ main{padding-top:18px!important}
 .tline li::before{content:"";position:absolute;left:47px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--orange);border:2px solid var(--card)}
 .tline .tchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .tline .tchips a{font-size:13px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--ink)}
+.favbar{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;background:linear-gradient(120deg,#1b3a66,#2a5a9a 60%,#eb6834);border-radius:16px;padding:14px 18px;margin:0 0 14px;box-shadow:0 8px 24px rgba(20,40,80,.18)}
+.favbar .star{font-size:26px;line-height:1}
+.favbar b{display:block;font-size:17px}.favbar small{display:block;opacity:.9;font-size:13px}
+.favbar .go{margin-left:auto;background:#fff;color:#1b3a66;font-weight:700;border-radius:10px;padding:8px 12px;white-space:nowrap;font-size:14px}
+@media(max-width:600px){.favbar{flex-wrap:wrap}.favbar .go{margin-left:0;width:100%;text-align:center}}
 .sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
 main{max-width:1100px;margin:0 auto;padding:0 16px 40px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
@@ -126,6 +131,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 16px 30px;color:var(--muted);fon
 </div>
 </header>
 <main>
+<a class="favbar" href="plan-a.html"><span class="star">★</span><span><b>Plan A: Die große Pleschnitzzinken-Runde</b><small>Favorit von Vadim &amp; Eugen · Teams, Zeitplan, Route, Umkehrregeln und Packliste</small></span><span class="go">Ansehen →</span></a>
 <div class="filters" role="group" aria-label="Filter">
   <span>Niveau:</span>
   <button class="chip" id="f-leicht" aria-pressed="true">Leicht</button>
@@ -3918,6 +3924,7 @@ function heroArt(){
     '<path d="'+far+'" fill="#b4c2d6" opacity=".7"/>'+peaks+'<path d="'+mid+'" fill="#6f8aa6" opacity=".85"/>'+
     '<path d="'+near+'" fill="#58703f"/>'+trees(r, W, H*0.76, H*1.0, 150, AUTUMN, 1.6)+chalet;
 }
+
 const ICO = {
   km:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 18c4 0 4-12 8-12s4 12 8 12"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="18" r="1.5"/></svg>',
   geh:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
@@ -3946,7 +3953,7 @@ function renderPlans(){
   const p = D.plaene.find(x => x.id === state.plan);
   const ts = p.touren.map(n => ALL.find(r => r.nr === n));
   $('tline').innerHTML = '<h3>Plan '+p.id+': '+p.titel+'</h3><div class="note">'+p.plus.join(' · ')+'</div>'+(p.teams ? '<div class="teams">'+p.teams.map(([t, x]) => '<div><b>'+t+'</b><span>'+x+'</span></div>').join('')+'</div>' : '')+'<ol>'+p.plan.map(([t, x]) => '<li><b>'+t+'</b><span>'+x+'</span></li>').join('')+'</ol>'+
-    '<div class="tchips">'+ts.map(r => '<a href="#" data-open="'+r.nr+'">'+r.nr+' · '+r.kurz+' · '+fmtH(r.geh)+' · '+r.hm+' Hm →</a>').join('')+'</div>';
+    (p.id === 'A' ? '<a class="btn" style="margin:14px 0 4px" href="plan-a.html">★ Plan A ausführlich: Route, Umkehrregeln, Packliste →</a>' : '')+'<div class="tchips">'+ts.map(r => '<a href="#" data-open="'+r.nr+'">'+r.nr+' · '+r.kurz+' · '+fmtH(r.geh)+' · '+r.hm+' Hm →</a>').join('')+'</div>';
 }
 document.addEventListener('click', e => { const g = e.target.closest('[data-goplan]'); if (g){ e.preventDefault(); state.plan = g.dataset.goplan; setTab('ueber'); $('plans').scrollIntoView({behavior:'smooth'}); } });
 document.addEventListener('click', e => { const c = e.target.closest('[data-plan]'); if (c){ state.plan = c.dataset.plan; renderPlans(); if (innerWidth < 800) $('tline').scrollIntoView({behavior:'smooth', block:'start'}); } });

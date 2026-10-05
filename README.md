@@ -8,6 +8,8 @@ https://alivsch-ai-code.github.io/wanderrouten-galsterberg/
 
 Statische Seite aus `docs/index.html`, läuft ohne Server.
 
+Plan A ausführlich (Favorit von Vadim & Eugen, mit Packliste): https://alivsch-ai-code.github.io/wanderrouten-galsterberg/plan-a.html
+
 ## Streamlit-Version lokal
 
 ```bash
@@ -20,7 +22,7 @@ Die Google-Maps-Routen starten am Chalet. Auf der Seite lässt sich auf „Mein 
 ## Statische Seite neu bauen
 
 ```bash
-python build_static.py   # schreibt docs/index.html
+python build_static.py   # schreibt docs/index.html und docs/plan-a.html
 ```
 
 ## Eigene Fotos
@@ -32,5 +34,7 @@ Fotos als `docs/img/tour-1.jpg` … `tour-6.jpg` ablegen (Querformat). Die Seite
 - `routes.py`: Daten zu den Touren (hier ändern)
 - `app.py`: Streamlit-Dashboard
 - `build_static.py`: erzeugt die GitHub-Pages-Seite
+- `build_plan_a.py`: erzeugt die Plan-A-Seite (Route, Umkehrregeln, Packliste)
+- `art.js`: Illustrationen, von beiden Seiten genutzt
 
 Hinweis: Anfahrt, Pausen und Gesamtdauer sind Schätzungen. Vor Ort Wetter und Hüttenöffnungszeiten prüfen.
